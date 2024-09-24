@@ -1,0 +1,45 @@
+
+.box {
+    padding: 0;
+}
+.box ul {
+    margin: 0;
+    padding: 0;
+}
+.box ul li {
+    list-style: none;
+    display: none;
+}
+.box ul.imgList li img {
+    max-width: 100%;
+}
+.box ul.imgList li.active {
+    display: block;
+}
+.box .left {
+    left: 0;
+}
+.box .right {
+    right: 0;
+}
+
+
+.box ul.dotList {
+    text-align: center;
+    display: block;
+    position: relative;
+    bottom: 30px;
+    margin: 0 auto;
+}
+.box ul.dotList li {
+    display: block;
+    background: rgba(64, 86, 255, 0.3);
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    border-radius: 10px;
+}
+.box ul.dotList li.active {
+    background: rgba(64, 86, 255, 0.8);
+}
