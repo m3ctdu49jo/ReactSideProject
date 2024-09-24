@@ -46,10 +46,13 @@ let Button = function(props){
     );
 }
 
-let DotItem = function({index, activeIndex}){
+let DotItem = function({index, activeIndex, setActiveIndex}){
+    function setNewActiveIndex(){
+        setActiveIndex(index);
+    }
     return (
         //class若使用module.css一定都要使用物件的方式
-        <li className={index === activeIndex ? style.active : ""}></li>
+        <li onClick={setNewActiveIndex} className={index === activeIndex ? style.active : ""}></li>
     );
 }
 
@@ -91,7 +94,7 @@ export default function FlashBox({name}){
                 {
                     imgsName.map((imgName, index) => {
                         return (
-                            <DotItem key={index} index={index} activeIndex = {activeIndex} />
+                            <DotItem key={index} index={index} activeIndex = {activeIndex} setActiveIndex={setActiveIndex} />
                         );
                     })
                 }
