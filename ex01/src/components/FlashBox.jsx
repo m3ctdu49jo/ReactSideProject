@@ -17,12 +17,14 @@ let ArrowBtn = styled.div`
     color: #fff;
     font-size: 1.3rem;
     text-align: center;
-    line-height: 1.3;
+    line-height: 40px;
     background: rgba(0, 0, 0, .3);
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     position: absolute;
     top: 150px;
+    border-radius: 5px;
+    cursor: pointer;
 `;
 
 let Button = function(props){
