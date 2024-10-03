@@ -7,7 +7,7 @@ import QuestionBox from "./components/QuestionBox";
 export default function App(){
     return (
         <>
-            {/* <FlashBox name="James" /> */}
+            {/* <FlashBox /> */}
             <QuestionBox />
         </>
     );

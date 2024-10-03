@@ -76,7 +76,7 @@ export default function FlashBox({name}){
 
 
     return (
-        <Box className={style.box}>
+        <Box className={style.flashBox}>
             <Button isNext={true} currentIndex={activeIndex} setActiveIndex={setActiveIndex} liLen = {imgsName.length} />
             <Button isNext={false} currentIndex={activeIndex} setActiveIndex={setActiveIndex} liLen = {imgsName.length} />
             <ul className={style.imgList}>
