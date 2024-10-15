@@ -3,7 +3,7 @@ ul {
     padding: 0;
 }
 ul li {
-    list-style: block;
+    list-style: none;
 }
 
 .active {
@@ -49,4 +49,21 @@ ul li {
 }
 .flashBox ul.dotList li.active {
     background: rgba(64, 86, 255, 0.8);
+}
+
+.displayBox {
+
+}
+.displayBox strong {
+    font-size: 1.3rem;
+}
+.displayBox ul li {
+
+    height: 600px;
+    /* &:first-child{
+        margin-left: 0;
+    }
+    &:last-child{
+        margin-right: 0;
+    } */
 }
