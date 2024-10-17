@@ -11,6 +11,17 @@ ul li {
     list-style: none;
 }
 
+button[type="button"] {
+    padding: .5rem 1rem;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover {
+        background: #ddd;
+    }
+}
+
 .active {
     display: block;
 }

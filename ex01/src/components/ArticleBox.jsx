@@ -7,20 +7,25 @@ const DisplayBox = styled.div`
     width: 100%;
     margin: 0 auto;
 `;
+const ArticleWrap = styled.ul`
+    display: flex;
+
+    li + li {
+        margin-left: 20px;
+    }
+`;
+
 const ArticleItems = styled.li`
     background-image: url(${props => props.$img});
     background-size: cover;
     display: block;
     width: 100%;
-    // margin: 0 1rem;
+    box-shadow: 0 10px 50px 10px rgba(0, 0, 0, .3);
+    border-radius: 15px;
     position: relative;
     overflow: hidden;
 `;
 
-const ArticleWrap = {
-    display: 'flex',
-    
-}
 
 const ContentBox = styled.div`
     color: #fff;
@@ -74,6 +79,13 @@ function ArticleBox() {
             });
             setArticles(displayItems);
         });
+
+        //文章底圖
+        let imgs = [];
+        for(;imgs.length < 3;) {
+            imgs.push(`./img0${Math.floor(Math.random() * 5) + 1}.jpg`);
+        }
+        setArticleImgs(imgs);
     }, [shouldFetch]);  // 原本是count
 
     useEffect(() => {
@@ -101,14 +113,12 @@ function ArticleBox() {
                 <button type="button" onClick={() => {setShouldFetch(true)}} style={{marginRight: "10px"}}>獲取資料</button>{/* 原本是 fetchData() */}
                 <button type="button" onClick={() => {setArticles(null)}}>清空資料</button>
             </div>
-            <ul style={ArticleWrap}>
+            <ArticleWrap>
                 {
-                    articles ? articles.map(article => {
+                    articles ? articles.map((article, index) => {
                     
-                    //儲存img，渲染會跑
-                    setArticleImgs(`img0${Math.floor(Math.random() * 5) + 1}`);
                     return (
-                        <ArticleItems key={article.id} $img={images(`./img0${Math.floor(Math.random() * 5) + 1}.jpg`)} onMouseOver={() => showArticleText.call(this, article.id)} onMouseOut={() => showArticleText.call(this, "")}>
+                        <ArticleItems key={article.id} $img={images(articleImgs[index])} onMouseOver={() => showArticleText.call(this, article.id)} onMouseOut={() => showArticleText.call(this, "")}>
                             <ContentBox $show={showTextId === article.id}>
                                 <strong>{article.title}</strong>
                                 <p>{article.body}</p>
@@ -116,7 +126,7 @@ function ArticleBox() {
                         </ArticleItems>
                     )}) : ""
                 }
-            </ul>
+            </ArticleWrap>
         </DisplayBox>
     );
 }
