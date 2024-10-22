@@ -20,7 +20,8 @@ const ArticleItems = styled.li`
     background-size: cover;
     display: block;
     width: 100%;
-    box-shadow: 0 10px 50px 10px rgba(0, 0, 0, .3);
+    box-shadow: 0 10px 50px 10px rgba(0, 0, 0, .3);    
+    border: 1px solid #ddd;
     border-radius: 15px;
     position: relative;
     overflow: hidden;
@@ -36,7 +37,8 @@ const ContentBox = styled.div`
     padding: 1rem;
     position: absolute;
     left: 0;
-    bottom: ${props => props.$show ? "0px" : "-145px" };
+    bottom: ${props => props.$show ? "0px" : "-145px" };    
+    // box-shadow: ${props => props.$show ? "0 -10px 30px rgba(0, 0, 0, .5)" : "0"};   
     transition: all .35s ease-out;
 
     strong {
