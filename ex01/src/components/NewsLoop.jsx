@@ -2,6 +2,26 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import style from "../styles/style.module.css";
 
+const NewsWrap = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 680px;
+    height: 400px;
+    margin: 0 auto;
+
+    ul {
+    }
+
+    li {
+        background: #eee;
+        display: block;
+        margin-bottom: 10px;
+        padding: .8rem .8rem;
+        border-radius: 5px;
+    }
+`;
 
 function fetchData(){
     let data;
@@ -10,6 +30,27 @@ function fetchData(){
     }).then(response => response.json());
 }
 
+// 共用函式抽離
+function displayNewsItemsWithIndex(newsData, currentNewsId, setNewsItems){
+    const displayedCount = 5;
+    let currentNewsIndex;            
+    if (currentNewsId !== 0){
+        currentNewsIndex = newsData.findIndex(x => x.id === currentNewsId);
+    } else{
+        currentNewsIndex = 0;
+    }
+
+    let items = [];
+    const newsCount = newsData.length;
+    for(let i = 0;items.length < displayedCount;){
+        // 若超過資料筆數上限，改得知目前超出筆數，透過下方 n + i 換算得知為資料的 1 ~ n 筆
+        let n = currentNewsIndex + i >= newsCount ? currentNewsIndex - newsCount : currentNewsIndex;
+        items.push(newsData[n + i]);
+        i++;
+    }
+    setNewsItems(items);
+    return currentNewsIndex;
+}
 
 
 function NewsLoop(){
@@ -17,27 +58,12 @@ function NewsLoop(){
     const [newsItems, setNewsItems] = useState([]);
     const [shouldFetch, setShouldFetch] = useState(false);
     const [newsArray, setNewsArray] = useState([]);
-    const displayedCount = 5;
 
     useEffect(() => {
         if(!shouldFetch){
             fetchData().then(data => { 
-                let currentNewsIndex;
-                if (currentNewsId !== 0){
-                    currentNewsIndex = data.findIndex(x => x.id === currentNewsId);
-                } else{
-                    currentNewsIndex = 0;
-                }
-
-                let items = [];
-                for(let i = 0;items.length < displayedCount;){
-                    currentNewsIndex = currentNewsIndex + 1 === data.length ? 0 : currentNewsIndex;
-                    items.push(data[currentNewsIndex + i]);
-                    i++;
-                }
+                displayNewsItemsWithIndex(data, currentNewsId, setNewsItems);
                 setNewsArray(data);
-                setNewsItems(newsArray);
-                console.log(data);
                 setShouldFetch(true);
             });
         }
@@ -45,26 +71,9 @@ function NewsLoop(){
 
     useEffect(() => {        
         const id = setInterval(() => {
-            let currentNewsIndex;            
-            if (currentNewsId !== 0){
-                currentNewsIndex = newsArray.findIndex(x => x.id === currentNewsId);
-            } else{
-                currentNewsIndex = 0;
-            }
-
-            let items = [];
-            const newsCount = newsArray.length;
-            for(let i = 0;items.length < displayedCount;){
-                // 若超過資料筆數上限，改得知目前超出筆數，透過下方 n + i 換算得知為資料的 1 ~ n 筆
-                let n = currentNewsIndex + i >= newsCount ? currentNewsIndex - newsCount : currentNewsIndex;
-                items.push(newsArray[n + i]);
-                i++;
-            }
-            setNewsItems(items);
-
+            let currentNewsIndex = displayNewsItemsWithIndex(newsArray, currentNewsId, setNewsItems);
             // 從下一個id開始取
-            setCurrentNewsId(newsArray[currentNewsIndex + 1 === newsCount ? 0 : currentNewsIndex + 1].id);
-            // console.log(currentNewsIndex);
+            setCurrentNewsId(newsArray[currentNewsIndex + 1 === newsArray.length ? 0 : currentNewsIndex + 1].id);
         }, 2000);
         return () => { clearTimeout(id) };
     }, [shouldFetch, currentNewsId]);
@@ -72,13 +81,13 @@ function NewsLoop(){
 
 
     return (
-        <div>
+        <NewsWrap>
             <ul>
                 {
-                    newsItems.map((news) => <li key={news.id}>{ news.id + news.title }</li>)
+                    newsItems.reverse().map((news) => <li key={news.id}>{ news.id + news.title }</li>)
                 }
             </ul>
-        </div>
+        </NewsWrap>
     );
 }
 
