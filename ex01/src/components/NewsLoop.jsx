@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import style from "../styles/style.module.css";
 
@@ -16,9 +16,8 @@ function NewsLoop(){
     const [currentNewsId, setCurrentNewsId] = useState(0);
     const [newsItems, setNewsItems] = useState([]);
     const [shouldFetch, setShouldFetch] = useState(false);
-    // const [nextNewsId, setNextNewsId] = useState("");
     const [newsArray, setNewsArray] = useState([]);
-    // const newsArray = useMemo(() => fetchData().then(d => setData(d)), []);
+    const displayedCount = 5;
 
     useEffect(() => {
         if(!shouldFetch){
@@ -31,11 +30,10 @@ function NewsLoop(){
                 }
 
                 let items = [];
-                for(let i = 0;items.length <= 4;){
+                for(let i = 0;items.length < displayedCount;){
                     currentNewsIndex = currentNewsIndex + 1 === data.length ? 0 : currentNewsIndex;
                     items.push(data[currentNewsIndex + i]);
                     i++;
-                    //console.log(data[currentNewsIndex + i]);
                 }
                 setNewsArray(data);
                 setNewsItems(newsArray);
@@ -43,31 +41,31 @@ function NewsLoop(){
                 setShouldFetch(true);
             });
         }
+    }, [shouldFetch]);
+
+    useEffect(() => {        
         const id = setInterval(() => {
-            //console.log(newsArray);
-            let currentNewsIndex;
-            currentNewsIndex = currentNewsIndex + 1 === newsArray.length ? 0 : currentNewsIndex + 1;
-            
+            let currentNewsIndex;            
             if (currentNewsId !== 0){
                 currentNewsIndex = newsArray.findIndex(x => x.id === currentNewsId);
             } else{
-                currentNewsIndex = 95;
+                currentNewsIndex = 0;
             }
 
             let items = [];
-                for(let i = 0;items.length <= 4;){
-                    currentNewsIndex = currentNewsIndex + 1 === newsArray.length ? 0 : currentNewsIndex;
-                    items.push(newsArray[currentNewsIndex + i]);
-                    console.log(newsArray[currentNewsIndex + i]);
-                    i++;
-                    //console.log(newsArray[currentNewsIndex + i]);
-                }
-                setNewsItems(items);
+            const newsCount = newsArray.length;
+            for(let i = 0;items.length < displayedCount;){
+                // 若超過資料筆數上限，改得知目前超出筆數，透過下方 n + i 換算得知為資料的 1 ~ n 筆
+                let n = currentNewsIndex + i >= newsCount ? currentNewsIndex - newsCount : currentNewsIndex;
+                items.push(newsArray[n + i]);
+                i++;
+            }
+            setNewsItems(items);
 
-            //從這排錯 id=96報錯
-            setCurrentNewsId(newsArray[currentNewsIndex + 1 === newsArray.length ? 0 : currentNewsIndex].id);
-            console.log(currentNewsIndex);
-        }, 1000);
+            // 從下一個id開始取
+            setCurrentNewsId(newsArray[currentNewsIndex + 1 === newsCount ? 0 : currentNewsIndex + 1].id);
+            // console.log(currentNewsIndex);
+        }, 2000);
         return () => { clearTimeout(id) };
     }, [shouldFetch, currentNewsId]);
 
@@ -75,10 +73,9 @@ function NewsLoop(){
 
     return (
         <div>
-            1
             <ul>
                 {
-                    newsItems.map((news) => <li key={news.id}>{ news.title }</li>)
+                    newsItems.map((news) => <li key={news.id}>{ news.id + news.title }</li>)
                 }
             </ul>
         </div>
