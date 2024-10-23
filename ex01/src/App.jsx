@@ -3,6 +3,7 @@ import FlashBox from "./components/FlashBox";
 import QuestionBox from "./components/QuestionBox";
 import ArticleBox from "./components/ArticleBox";
 import NewsLoop from "./components/NewsLoop";
+import NewsLoopBox from "./components/NewsLoopBox";
 
 
 //components 以大寫開頭
@@ -12,7 +13,8 @@ export default function App(){
             {/* <FlashBox /> */}
             {/* <QuestionBox /> */}
             {/* <ArticleBox /> */}
-            <NewsLoop />
+            {/* <NewsLoop /> */}
+            <NewsLoopBox />
         </>
     );
 }
