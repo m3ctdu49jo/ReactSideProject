@@ -21,7 +21,7 @@ const NewsWrap = styled.div`
     }
 
     li {
-        background: #eee;
+        background: #f2f2f2;
         display: block;
         width: 80%;
         margin: 0 auto;
@@ -32,9 +32,10 @@ const NewsWrap = styled.div`
         top: 0;
         left: 0;
         right: 0;
-    }
-    li: first-child {
 
+        font {
+            color: #ccc;
+        }
     }
 `;
 
@@ -75,6 +76,7 @@ function NewsLoopBox(){
     const newsItemRef = useRef([]);
     const [trans, setTrnas] = useState(false);
     const [elmsTop, setElmsTop] = useState([]);
+    const [newsTimeout, setNewsTimeout] = useState(true);
 
     useEffect(() => {
         if(shouldFetch){
@@ -87,7 +89,9 @@ function NewsLoopBox(){
         }
     }, [shouldFetch]);
 
-    useEffect(() => {      
+    useEffect(() => {    
+        if(!newsTimeout)
+            return;  
         const id = setInterval(() => {
             let currentNewsIndex;            
             if (currentNewsId !== 0){
@@ -111,10 +115,11 @@ function NewsLoopBox(){
             // 從下一個id開始取
             setCurrentNewsId(newsArray[currentNewsIndex + 1 === newsArray.length ? 0 : currentNewsIndex + 1].id);
         }, 5000);
+        setNewsTimeout(true);
         return () => { 
             clearTimeout(id);
         };
-    }, [shouldFetch, currentNewsId]);
+    }, [shouldFetch, currentNewsId, newsTimeout]);
 
 
     useEffect(() => {
@@ -134,13 +139,14 @@ function NewsLoopBox(){
 
 
 
+
     return (
         <NewsWrap>
-            <ul>
+            <ul onMouseEnter={() => {setNewsTimeout(false);console.log('in')}} onMouseLeave={() => {setNewsTimeout(true);console.log('out')}}>
                 {
                     newsItems.map((news, index) => {
                         let top = elmsTop ? elmsTop[index] : 0;
-                        return <li key={news.id} ref={el => newsItemRef.current[index] = el} style={{transform: `translateY(${top}px)`}}>{ news.id + news.title }</li>
+                        return <li key={news.id} ref={el => newsItemRef.current[index] = el} style={{transform: `translateY(${top}px)`}}><font>{ news.id + '. ' }</font>{ news.title }</li>
                     })
                 }
             </ul>
