@@ -83,3 +83,15 @@ button[type="button"] {
         margin-right: 0;
     } */
 }
+
+/*------ GridView ------*/
+.gridViewColumn {
+    font-size: .8rem;
+    border: 1px solid #ddd;
+    padding: .3rem .5rem;
+}
+.gridViewColumn:nth-child(n) {
+    border-top-width: 0;
+    border-left-width: 0;
+}
+/*------ GridView End ------*/
