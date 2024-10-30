@@ -145,6 +145,7 @@ function GridView(data = [], columnsName = []) {
     const [colsId, setColsId] = useState([]);
     const [colsSort, setColsSort] = useState([]);
     const [gridHover, setGridHover] = useState(false);
+    const [hover, setHover] = useState(false);
     const initialDataRef = useRef(null);
 
 
@@ -221,16 +222,21 @@ function GridView(data = [], columnsName = []) {
     }
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
-    const handleMouseEnter = 
-        useDebounce(() => {
-            console.log(1);
+    useDebounce(() => {
+        if(hover)
             setGridHover(true);
-        }, 200, [gridHover]);
+        else
+            handleMouseLeave();
+    }, 200, [hover, gridHover]);
     const handleMouseLeave = () => {
-        setGridHover(false)};
+        setTimeout(() => {
+            if(!hover)
+                setGridHover(false);
+        }, 500);
+    };
 
     return (
-        <GridViewBox onMouseEnter={() => {console.log(typeof handleMouseEnter)}} onMouseLeave={handleMouseLeave}>
+        <GridViewBox onMouseEnter={() => {setHover(true)}} onMouseLeave={() => {setHover(false)}}>
             <ControlBar $hover={gridHover}>
                 <div title="重製排序" onClick={() => resetSortAndInitData()}>⥯</div>
                 <div title="資料重整" onClick={() => resetData()}>↻</div>
