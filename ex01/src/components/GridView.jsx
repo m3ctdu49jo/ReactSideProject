@@ -1,19 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import style from "../styles/style.module.css"
+import debounce from 'lodash/debounce'
+import useDebounce from "../hooks/useDebounce";
 
-const GridViewWrap = styled.div`
+const GridViewBox = styled.div`
     width: 80%;
+    margin: 50px auto 0;
+    position: relative;
+`;
+const GridViewWrap = styled.div`
     display: grid;
     grid-template-columns: repeat(${props => props.$colsNum}, 1fr);
-    margin: 50px auto 0;
 `;
 const ColumnTitle = styled.div`
     background: #d7f3ff;
+    padding-right: 1rem;
     border-top-width: 1px !important; 
+    position: relative;
+
 
     &:first-child {
         border-left-width: 1px !important; 
+    }
+    
+    i {
+        color: #333;
+        font-size: 16px;
+        text-align: center;
+        line-height: 20px;
+        font-style: normal;
+        width: 20px;
+        height: 20px;
+        margin: auto 0;
+        position: absolute;
+        right: .1rem;
+        top: 0;
+        bottom: 0;
+        cursor: pointer;
+        border-radius: 50%;
+
+        &.normal {
+            color: #aaa;
+        }
+
     }
 `;
 const Column = styled.div`
@@ -28,6 +58,61 @@ const ColumnNone = styled.div`
     border-left-width: 1px !important;
 `;
 
+const ControlBar = styled.div`
+    color: #999;
+    line-height: 1;
+    display: flex;
+    background: #fff;
+    padding: .3rem .7rem;
+    position: absolute;
+    transition: transform .5s ease, opacity .5s ease;
+    transform: translateY(${props => props.$hover ? "-33px" : "0"});
+    opacity: ${props => props.$hover ? 1 : 0};
+    right: 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, .1);
+
+    div {
+        position: relative;
+        padding-right: 10px;
+        cursor: pointer;
+        transition: all .2s ease;
+        
+        &:after {
+            content: "";
+            background: #ddd;
+            width: 1px;
+            height: 10px;
+            margin: auto 0;
+            position: absolute;
+            top: 0;
+            right: 5px;
+            bottom: 0;
+        }
+        &:last-child {        
+            padding-right: 0;
+
+            &:after {
+                display: none;
+            }
+        }
+        &:hover {
+            color: #5695e1;
+        }
+    }
+    
+    
+    &:after {
+        content: "";
+        width: 100%;
+        height: 10px;
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+    }
+`;
+
 // let column = [];
 
 // column.push({columnId: "orderNum", columnName: "訂單單號"})
@@ -38,13 +123,13 @@ const ColumnNone = styled.div`
 // }
 
 function mutiSort(data, sortConditions) {
-    console.log(sortConditions);
     return data.sort((a, b) => {
         for (let condition of sortConditions) {
-            const { key, asc = false } = condition;
+            const { key, asc = true } = condition;
             const diff = (a[key] > b[key]) - (a[key] < b[key]);
 
             if (diff !== 0) {
+                console.log(diff);
                 return asc ? diff : -diff;
             }
         }
@@ -59,6 +144,8 @@ function GridView(data = [], columnsName = []) {
     const [colsName, setColsName] = useState([]);
     const [colsId, setColsId] = useState([]);
     const [colsSort, setColsSort] = useState([]);
+    const [gridHover, setGridHover] = useState(false);
+    const initialDataRef = useRef(null);
 
 
     useEffect(() => {
@@ -77,6 +164,9 @@ function GridView(data = [], columnsName = []) {
         c.push({ colId: "productName", colName: "產品名稱" });
         setDataItems(d);
         setColumnNameItem(c);
+
+        if(!initialDataRef.current)
+            initialDataRef.current = d;
 
 
         if (!c[0]) {
@@ -106,43 +196,73 @@ function GridView(data = [], columnsName = []) {
         else {
             newSort.push({
                 key: colId,
-                asc: false
+                asc: true
             });
         }
         let itemSorted = await mutiSort([...dataItems], newSort);
-        console.log(itemSorted);
         setDataItems(itemSorted);
         setColsSort(newSort);
     }
 
+
+    function resetData(){
+        let d = [...initialDataRef.current];
+        d.push({ orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" });
+        initialDataRef.current = d;
+        resetSortAndInitData();
+    }
+    function resetSortAndInitData(){
+        setColsSort([]);
+        resetInitData();
+    }
+
+    function resetInitData(){
+        setDataItems(initialDataRef.current);
+    }
+
+    // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
+    const handleMouseEnter = 
+        useDebounce(() => {
+            console.log(1);
+            setGridHover(true);
+        }, 200, [gridHover]);
+    const handleMouseLeave = () => {
+        setGridHover(false)};
+
     return (
-        <GridViewWrap $colsNum={colsName.length}>
-            {
-                // title
-                colsName.map((colName, index) => {
-                    let id = columnNameItems.find(x => x.colName === colName).colId;
-                    let sort = colsSort.find(x => x.id === id);
-                    return (
-                        <ColumnTitle key={colName + index} className={style.gridViewColumn} onClick={() => { changeDataSort(id) }}>
-                            {colName}
-                            {sort ? sort.asc ? <i>V</i> : <i>^</i> : ""}
-                        </ColumnTitle>
-                    )
-                })
-            }
-            {
-                // content
-                dataItems.length === 0
-                    ?
-                    <ColumnNone className={style.gridViewColumn} $colsNum={colsName.length}>沒有資料</ColumnNone>
-                    :
-                    dataItems.map((item, itemIndex) => {
-                        return colsId.map((colId, colIndex) => {
-                            return <Column className={style.gridViewColumn} key={colId + colIndex} $colsNum={colsName.length}>{item[colId]}</Column>
-                        })
+        <GridViewBox onMouseEnter={() => {console.log(typeof handleMouseEnter)}} onMouseLeave={handleMouseLeave}>
+            <ControlBar $hover={gridHover}>
+                <div title="重製排序" onClick={() => resetSortAndInitData()}>⥯</div>
+                <div title="資料重整" onClick={() => resetData()}>↻</div>
+            </ControlBar>
+            <GridViewWrap $colsNum={colsName.length}>
+                {
+                    // title
+                    colsName.map((colName, index) => {
+                        let id = columnNameItems.find(x => x.colName === colName).colId;
+                        let sort = colsSort.find(x => x.key === id);
+                        return (
+                            <ColumnTitle key={colName + index} className={style.gridViewColumn}>
+                                {colName}
+                                <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
+                            </ColumnTitle>
+                        )
                     })
-            }
-        </GridViewWrap>
+                }
+                {
+                    // content
+                    dataItems.length === 0
+                        ?
+                        <ColumnNone className={style.gridViewColumn} $colsNum={colsName.length}>沒有資料</ColumnNone>
+                        :
+                        dataItems.map((item, itemIndex) => {
+                            return colsId.map((colId, colIndex) => {
+                                return <Column className={style.gridViewColumn} key={colId + colIndex} $colsNum={colsName.length}>{item[colId]}</Column>
+                            })
+                        })
+                }
+            </GridViewWrap>
+        </GridViewBox>
 
 
     );
