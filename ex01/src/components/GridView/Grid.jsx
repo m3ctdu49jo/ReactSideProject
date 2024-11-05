@@ -7,7 +7,7 @@ import GridHeader from "./GridHeader";
 import GridBody from "./GridBody";
 import { useGridViewContext } from "./GridViewProvider";
 import { useSelector, useDispatch } from "react-redux";
-import { setColsNameR, clearColsName, setColumnNameItemR, setColsIdR, AddDataItemsR } from "../../actions/GridActions";
+import { setColsNameR, clearColsName, setColumnNameItemR, setColsIdR, setDataItemsR } from "../../actions/GridActions";
 
 const GridViewBox = styled.div`
     width: 80%;
@@ -48,7 +48,7 @@ function Grid(data = [], columnsName = []) {
         c.push({ colId: "productName", colName: "產品名稱" });
         setDataItems(d);
         //setColumnNameItem(c);
-        dispatch(AddDataItemsR(d));
+        dispatch(setDataItemsR(d));
         dispatch(setColumnNameItemR(c));
 
         if(!initialDataRef.current)

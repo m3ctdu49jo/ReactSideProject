@@ -1,6 +1,13 @@
-export const AddDataItemsR = (dataItems) => {
+export const addDataItemsR = (dataItems) => {
     return {
         type: "ADD_DATA_ITEMS",
+        payload: dataItems
+    }
+}
+
+export const setDataItemsR = (dataItems) => {
+    return {
+        type: "SET_DATA_ITEMS",
         payload: dataItems
     }
 }
@@ -30,5 +37,12 @@ export const setColumnNameItemR = (columnNameItems) => {
     return {
         type: "SET_COLUMN_NAME_ITEMS",
         payload: columnNameItems
+    }
+}
+
+export const setColsSortR = (colsSort) => {
+    return {
+        type: "SET_COLS_SORT",
+        payload: colsSort
     }
 }

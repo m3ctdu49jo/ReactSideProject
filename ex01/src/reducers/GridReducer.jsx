@@ -2,7 +2,8 @@ const initialState = {
     dataItems: [],
     colsName: [],
     colsId: [],
-    columnNameItems: []
+    columnNameItems: [],
+    colsSort: []
 }
 
 const GridReducer = (state = initialState, action) => {
@@ -12,6 +13,11 @@ const GridReducer = (state = initialState, action) => {
                 ...state,
                 dataItems: [...state.dataItems, ...action.payload]
             }
+            case 'SET_DATA_ITEMS':
+                return {
+                    ...state,
+                    dataItems: action.payload
+                }
         case 'SET_COLS_NAME':
             return {
                 ...state,
@@ -32,6 +38,11 @@ const GridReducer = (state = initialState, action) => {
                 ...state,
                 columnNameItems: action.payload
             }
+        case 'SET_COLS_SORT':
+        return {
+            ...state,
+            colsSort: action.payload
+        }
         default:
             return state;
     }
