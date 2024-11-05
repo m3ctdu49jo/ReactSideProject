@@ -6,6 +6,8 @@ import ControlBar from "./ControlBar";
 import GridHeader from "./GridHeader";
 import GridBody from "./GridBody";
 import { useGridViewContext } from "./GridViewProvider";
+import { useSelector, useDispatch } from "react-redux";
+import { setColsNameR, clearColsName, setColumnNameItemR, setColsIdR, AddDataItemsR } from "../../actions/GridActions";
 
 const GridViewBox = styled.div`
     width: 80%;
@@ -19,14 +21,16 @@ const GridViewWrap = styled.div`
 
 function Grid(data = [], columnsName = []) {
     const {setDataItems} = useGridViewContext();
-    const [columnNameItems, setColumnNameItem] = useState([]);
-    const [colsName, setColsName] = useState([]);
-    const [colsId, setColsId] = useState([]);
+    // const [columnNameItems, setColumnNameItem] = useState([]);
+    // const [colsName, setColsName] = useState([]);
+    // const [colsId, setColsId] = useState([]);
     //const [colsSort, setColsSort] = useState([]);
     const [gridHover, setGridHover] = useState(false);
     const [hover, setHover] = useState(false);
     const initialDataRef = useRef(null);
 
+    const colsNameR = useSelector(state => state.grid.colsName);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         //fake
@@ -43,21 +47,29 @@ function Grid(data = [], columnsName = []) {
         c.push({ colId: "productId", colName: "產品編號" });
         c.push({ colId: "productName", colName: "產品名稱" });
         setDataItems(d);
-        setColumnNameItem(c);
+        //setColumnNameItem(c);
+        dispatch(AddDataItemsR(d));
+        dispatch(setColumnNameItemR(c));
 
         if(!initialDataRef.current)
             initialDataRef.current = d;
 
-
+        let names, ids;
         if (!c[0]) {
-            setColsName(d.map(i => Object.keys(i))[0]);
-            setColsId(d.map(i => Object.keys(i))[0]);
+            names = d.map(i => Object.keys(i))[0];
+            ids = d.map(i => Object.keys(i))[0];
+            //setColsName(d.map(i => Object.keys(i))[0]);
+            //setColsId(d.map(i => Object.keys(i))[0]);
         } else {
-            setColsName(c.map(i => i.colName));
-            setColsId(c.map(i => i.colId));
+            names = c.map(i => i.colName);
+            ids = c.map(i => i.colId);
+            //setColsName(c.map(i => i.colName));
+            //setColsId(c.map(i => i.colId));
         }
-    }, [data, columnsName]);
+        dispatch(setColsNameR(names));
+        dispatch(setColsIdR(ids));
 
+    }, [data, columnsName, dispatch]);
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
     useDebounce(() => {
@@ -76,9 +88,9 @@ function Grid(data = [], columnsName = []) {
     return (
         <GridViewBox onMouseEnter={() => {setHover(true)}} onMouseLeave={() => {setHover(false)}}>
             <ControlBar gridHover={gridHover} initialDataRef={initialDataRef} />
-            <GridViewWrap $colsNum={colsName.length}>
-                <GridHeader columnNameItems={columnNameItems} colsName={colsName} />
-                <GridBody colsName={colsName} colsId={colsId} />
+            <GridViewWrap $colsNum={colsNameR.length}>
+                <GridHeader />
+                <GridBody />
             </GridViewWrap>
         </GridViewBox>
     );

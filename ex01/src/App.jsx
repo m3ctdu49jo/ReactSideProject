@@ -1,4 +1,6 @@
 import React from "react";
+import { Provider } from "react-redux"
+import store from "./store/store";
 import FlashBox from "./components/FlashBox";
 import QuestionBox from "./components/QuestionBox";
 import ArticleBox from "./components/ArticleBox";
@@ -11,12 +13,14 @@ import GridView from "./components/GridView";
 export default function App(){
     return (
         <>
-            {/* <FlashBox /> */}
-            {/* <QuestionBox /> */}
-            {/* <ArticleBox /> */}
-            {/* <NewsLoop /> */}
-            {/* <NewsLoopBox /> */}
-            <GridView />
+            <Provider store={store}>
+                {/* <FlashBox /> */}
+                {/* <QuestionBox /> */}
+                {/* <ArticleBox /> */}
+                {/* <NewsLoop /> */}
+                {/* <NewsLoopBox /> */}
+                <GridView />
+            </Provider>
         </>
     );
 }

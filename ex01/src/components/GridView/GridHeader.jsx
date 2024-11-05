@@ -2,7 +2,7 @@ import React from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
 import { useGridViewContext } from "./GridViewProvider";
-
+import { useSelector } from "react-redux";
 
 const ColumnTitle = styled.div`
     background: #d7f3ff;
@@ -55,6 +55,8 @@ function mutiSort(data, sortConditions) {
 function GridHeader({columnNameItems, colsName}){
 
     const {dataItems, setDataItems, colsSort, setColsSort} = useGridViewContext();
+    const colsNameR = useSelector(state => state.grid.colsName);
+    const columnNameItemsR = useSelector(state => state.grid.columnNameItems);
     
     let changeDataSort = async function (colId) {
         let newSort = [...colsSort];
@@ -79,13 +81,12 @@ function GridHeader({columnNameItems, colsName}){
         }
         let itemSorted = await mutiSort([...dataItems], newSort);
         setDataItems(itemSorted);
-        console.log(newSort);
         setColsSort(newSort);
     }
 
     return (
-        colsName.map((colName, index) => {
-            let id = columnNameItems.find(x => x.colName === colName).colId;
+        colsNameR.map((colName, index) => {
+            let id = columnNameItemsR.find(x => x.colName === colName).colId;
             let sort = colsSort.find(x => x.key === id);
             return (
                 <ColumnTitle key={colName + index} className={style.gridViewColumn}>
