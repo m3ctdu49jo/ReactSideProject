@@ -13,11 +13,11 @@ const GridReducer = (state = initialState, action) => {
                 ...state,
                 dataItems: [...state.dataItems, ...action.payload]
             }
-            case 'SET_DATA_ITEMS':
-                return {
-                    ...state,
-                    dataItems: action.payload
-                }
+        case 'SET_DATA_ITEMS':
+            return {
+                ...state,
+                dataItems: action.payload
+            }
         case 'SET_COLS_NAME':
             return {
                 ...state,

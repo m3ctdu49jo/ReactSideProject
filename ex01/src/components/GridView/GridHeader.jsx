@@ -58,6 +58,7 @@ function GridHeader({columnNameItems, colsName}){
     const colsNameR = useSelector(state => state.grid.colsName);
     const columnNameItemsR = useSelector(state => state.grid.columnNameItems);
     const colsSortR = useSelector(state => state.grid.colsSort);
+    const dataItemsR = useSelector(state => state.grid.dataItems);
 
     const dispatch = useDispatch();
     
@@ -82,7 +83,7 @@ function GridHeader({columnNameItems, colsName}){
                 asc: true
             });
         }
-        let itemSorted = await mutiSort([...dataItems], newSort);
+        let itemSorted = await mutiSort([...dataItemsR], newSort);
         //setDataItems(itemSorted);
         //setColsSort(newSort);
         dispatch(setDataItemsR(itemSorted));

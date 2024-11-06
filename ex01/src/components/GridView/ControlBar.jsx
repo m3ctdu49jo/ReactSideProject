@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { useGridViewContext } from "./GridViewProvider";
+import { useDispatch, useSelector } from "react-redux";
+import { setDataItemsR, addDataItemsR, setColsSortR } from "../../actions/GridActions";
 
 const ControlBox = styled.div`
     color: #999;
@@ -61,21 +63,28 @@ const ControlBox = styled.div`
 
 function ControlBar({gridHover, initialDataRef}){
 
-    const {setDataItems, setColsSort} = useGridViewContext();
+    //const {setDataItems, setColsSort} = useGridViewContext();
+    const dispatch = useDispatch();
     
     function resetData(){
-        let d = [...initialDataRef.current];
-        d.push({ orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" });
-        initialDataRef.current = d;
+        // let d = [...initialDataRef.current];
+        // d.push({ orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" });
+        // initialDataRef.current = d;
+        let addItem = { orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" };
+        dispatch(addDataItemsR([addItem]));
+        initialDataRef.current = [...initialDataRef.current, addItem];
         resetSortAndInitData();
+
     }
     function resetSortAndInitData(){
-        setColsSort([]);
+        //setColsSort([]);
+        dispatch(setColsSortR([]));
         resetInitData();
     }
 
     function resetInitData(){
-        setDataItems(initialDataRef.current);
+        //setDataItems(initialDataRef.current);
+        dispatch(setDataItemsR(initialDataRef.current));
     }
     return (
         <ControlBox $hover={gridHover}>
