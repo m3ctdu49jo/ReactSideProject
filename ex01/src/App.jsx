@@ -7,6 +7,7 @@ import ArticleBox from "./components/ArticleBox";
 import NewsLoop from "./components/NewsLoop";
 import NewsLoopBox from "./components/NewsLoopBox";
 import GridView from "./components/GridView";
+import Paging from "./components/Paging/Paging";
 
 
 //components 以大寫開頭
@@ -19,7 +20,8 @@ export default function App(){
                 {/* <ArticleBox /> */}
                 {/* <NewsLoop /> */}
                 {/* <NewsLoopBox /> */}
-                <GridView />
+                {/* <GridView /> */}
+                <Paging />
             </Provider>
         </>
     );
