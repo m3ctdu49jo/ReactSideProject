@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const PagingBox = styled.div`
@@ -41,75 +41,83 @@ const PagingInput = styled.input`
 `;
 
 function Paging({dataNum = 20}){
-    const [currentNum, serCurrentNum] = useState();
+    const [currentNum, setCurrentNum] = useState(15);
+    const [pagingItems, setPagingItems] = useState([]);
     const maxPagingItem = 5;
-    const pagingItems = [];
 
-    
-    if(maxPagingItem > dataNum){
-        for(let i = 1;;){
-            pagingItems.push(i);
-            if(i >= dataNum)
-                break;
-            i++;
-        }
-    }   // 1 2 3 4
-    
-    if(maxPagingItem < dataNum && dataNum < 10){
-        let beginNum;
-        pagingItems.push(1);
-        pagingItems.push("...");
-        if(currentNum - 2 === 1)
-            beginNum = 3;
-        else
+    useEffect(() => {        
+        let pagings = [];
+        if(maxPagingItem >= dataNum){
+            for(let i = 1;;){
+                pagings.push(i);
+                if(i >= dataNum)
+                    break;
+                i++;
+            }
+        }   // 1 2 3 4
+        
+        if(maxPagingItem < dataNum && currentNum + 3 >= dataNum){
+            let beginNum;
+            pagings.push(1);
+            pagings.push("...");
+            if(currentNum - 2 === 1)
+                beginNum = 3;
+            else
+                beginNum = currentNum - 2;
+
+            for(;;){
+                pagings.push(beginNum);
+                if(beginNum === dataNum)
+                    break;
+                beginNum++;
+            }
+        }   // 1 ... 4 5 6 7 8 9
+
+        
+        if(dataNum >= maxPagingItem + 3 && currentNum + 2 <= 5){
+            let beginNum;
+            if(currentNum - 2 === 1)
+                beginNum = 3;
+            else if(currentNum - 2 <= 0)
+                beginNum = 1;
+
+            for(let i = 0; i < 5; i++){
+                pagings.push(beginNum);
+                beginNum++;
+            }
+            pagings.push("...");
+            pagings.push(dataNum);
+        }   // 1 2 3 4 5 ... 8
+
+        if(dataNum >= 10 && currentNum < dataNum - 2 && currentNum - 2 > 1 && currentNum + 3 < dataNum){
+            let beginNum;
+            pagings.push(1);
+            pagings.push("...");
+
             beginNum = currentNum - 2;
+            for(;;){
+                pagings.push(beginNum);
+                if(beginNum === currentNum + 2)
+                    break;
+                beginNum++;
+            }
 
-        for(;;){
-            pagingItems.push(beginNum);
-            if(beginNum === dataNum)
-                break;
-            beginNum++;
-        }
-    }   // 1 ... 4 5 6 7 8 9
+            pagings.push("...");
+            pagings.push(dataNum);
+        }   // 1 ... 4 5 6 7 8 ... 11
 
-    
-    // if(maxPagingItem < dataNum && dataNum <= 8){
-    //     let beginNum;
-    //     pagingItems.push(1);
-    //     pagingItems.push("...");
-    //     if(currentNum - 2 === 1)
-    //         beginNum = 3;
-    //     else
-    //         beginNum = currentNum - 2;
+        setPagingItems(pagings);
 
-    //     for(;;){
-    //         pagingItems.push(beginNum);
-    //         if(beginNum === dataNum)
-    //             break;
-    //         beginNum++;
-    //     }
-    // }   // 1 2 3 4 5 ... 8
-
-    if(dataNum >= 10 && currentNum < dataNum - 2){
-        let beginNum;
-        pagingItems.push(1);
-        pagingItems.push("...");
-
-        beginNum = currentNum - 2;
-        for(;;){
-            pagingItems.push(beginNum);
-            if(beginNum === currentNum + 2)
-                break;
-            beginNum++;
-        }
-
-        pagingItems.push("...");
-        pagingItems.push(dataNum);
-    }   // 1 ... 4 5 6 7 8 ... 11
+    }, [dataNum]);
 
     return (
         <>
             <PagingBox>
+                {
+                    pagingItems.map(item => {
+                        return <div>{item}</div>
+                    })
+                }
             </PagingBox>
             <PagingBox>
                 <div>1</div>
