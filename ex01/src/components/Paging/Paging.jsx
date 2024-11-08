@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 
 const PagingBox = styled.div`
@@ -30,8 +30,10 @@ const PagingBox = styled.div`
     }
 `;
 const PagingArrow = styled.div`
-    padding: .3rem .5rem;
+    color: ${props => props.$disabled ? "#888 !important" : "inherit"};
+    background: ${props => props.$disabled ? "#d5d5d5 !important" : "inherit"};
     border: 1px solid #ddd;
+    cursor: ${props => props.$disabled ? "not-allowed !important" : "inherit"};
 `;
 const PagingInput = styled.input`
     font-size: .7rem;
@@ -40,45 +42,78 @@ const PagingInput = styled.input`
     padding: .2rem;
 `;
 
-function Paging({dataNum = 20}){
-    const [currentNum, setCurrentNum] = useState(15);
+function tryParseInt(strNum){
+    let isNum = (/^\d*$/).test(strNum) && strNum;
+    return isNum;
+}
+
+function defParseInt(strNum, defaultNum) {
+    return tryParseInt(strNum) ? parseInt(strNum) : defaultNum;
+}
+
+function pagingCalculate(dataCount, pagingPerNum){
+    let count = 1;
+    count = Math.ceil(dataCount / pagingPerNum);
+    count = count > 0 ? count : count;
+    return count;
+}
+
+function Paging({dataNum = 200}){
+    const [currentNum, setCurrentNum] = useState(1);
     const [pagingItems, setPagingItems] = useState([]);
     const maxPagingItem = 5;
+    const pagingInput = useRef(null);
+    const pagingPerInput = useRef(null);
+    const [pagingCount, setPagingCount] = useState(1);
+    const [pagingPer, setPagingPer] = useState(10);
 
     useEffect(() => {        
         let pagings = [];
-        if(maxPagingItem >= dataNum){
+        let pagingPer = pagingPerInput.current.value;
+        let count = 1;
+
+        pagingPer = pagingPer !== "" ? pagingPer : "10";
+
+        if(!tryParseInt(pagingPer)){
+            alert("請輸入數字");
+            return;
+        }
+        pagingPer = defParseInt(pagingPer, 10);
+        pagingPer = pagingPer <= 0 ? 10 : pagingPer;
+        setPagingPer(pagingPer);
+
+        count = pagingCalculate(dataNum, pagingPer);
+        setPagingCount(count);
+
+        if(maxPagingItem >= count){
             for(let i = 1;;){
                 pagings.push(i);
-                if(i >= dataNum)
+                if(i >= count)
                     break;
                 i++;
             }
         }   // 1 2 3 4
         
-        if(maxPagingItem < dataNum && currentNum + 3 >= dataNum){
+        if(maxPagingItem < count && currentNum + 3 >= count){
             let beginNum;
             pagings.push(1);
             pagings.push("...");
             if(currentNum - 2 === 1)
                 beginNum = 3;
             else
-                beginNum = currentNum - 2;
+                beginNum = count - 4;
 
             for(;;){
                 pagings.push(beginNum);
-                if(beginNum === dataNum)
+                if(beginNum === count)
                     break;
                 beginNum++;
             }
         }   // 1 ... 4 5 6 7 8 9
-
         
-        if(dataNum >= maxPagingItem + 3 && currentNum + 2 <= 5){
+        if(count > maxPagingItem && currentNum + 3 <= count && currentNum <= 4){
             let beginNum;
-            if(currentNum - 2 === 1)
-                beginNum = 3;
-            else if(currentNum - 2 <= 0)
+            if(currentNum - 3 <= 1)
                 beginNum = 1;
 
             for(let i = 0; i < 5; i++){
@@ -86,10 +121,10 @@ function Paging({dataNum = 20}){
                 beginNum++;
             }
             pagings.push("...");
-            pagings.push(dataNum);
-        }   // 1 2 3 4 5 ... 8
+            pagings.push(count);
+        }   // 1 2 3 4 5 ... 20
 
-        if(dataNum >= 10 && currentNum < dataNum - 2 && currentNum - 2 > 1 && currentNum + 3 < dataNum){
+        if(count >= 10 && currentNum < count - 2 && currentNum - 3 > 1 && currentNum + 4 <= count){
             let beginNum;
             pagings.push(1);
             pagings.push("...");
@@ -103,38 +138,106 @@ function Paging({dataNum = 20}){
             }
 
             pagings.push("...");
-            pagings.push(dataNum);
+            pagings.push(count);
         }   // 1 ... 4 5 6 7 8 ... 11
 
         setPagingItems(pagings);
 
-    }, [dataNum]);
+    }, [dataNum, currentNum, pagingPer]);
+
+    function pagingPrevNext(clickType){
+        let newCurrentNum = currentNum;
+        if(clickType === "prev"){
+            if(currentNum - 1 >= 1)
+                newCurrentNum = currentNum - 1;
+        } else {
+            if(currentNum + 1 <= pagingCount)
+                newCurrentNum = currentNum + 1;
+        }
+        setCurrentNum(newCurrentNum);
+    }
+
+    function pagingGo(){
+        setCurrentNum(defParseInt(pagingInput.current.value, 1));
+        setPagingPer(defParseInt(pagingPerInput.current.value, 10));
+    }
+
+    useEffect(() => {
+        let inputNum = pagingInput.current.value;
+        let inputPerNum = pagingPerInput.current.value;
+        let newPagingCount, newCorrentNum;
+        
+        if((!tryParseInt(inputNum) && inputNum !== "") || (!tryParseInt(inputPerNum) && inputPerNum !== ""))
+            alert("請輸入數字");
+        else
+        {
+            inputPerNum = defParseInt(pagingPerInput.current.value, 10);
+            newPagingCount = pagingCalculate(dataNum, inputPerNum);
+            if(inputNum !== ""){
+                inputNum = defParseInt(inputNum, currentNum);
+                inputNum = inputNum > pagingCount ? pagingCount : inputNum;
+                pagingInput.current.value = inputNum;
+                newCorrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
+                if(newPagingCount < inputNum)
+                    setCurrentNum(newPagingCount);
+            }else{
+                newCorrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
+                setCurrentNum(newCorrentNum);
+            }
+            setPagingCount(newPagingCount);
+            setPagingPer(inputPerNum);
+        }
+    }, [dataNum, currentNum, pagingPer]);
+
+    // function reviewPaging(){
+    //     let inputNum = pagingInput.current.value;
+    //     let inputPerNum = pagingPerInput.current.value;
+    //     let newPagingCount, newCorrentNum;
+        
+    //     if((!tryParseInt(inputNum) && inputNum !== "") || (!tryParseInt(inputPerNum) && inputPerNum !== ""))
+    //         alert("請輸入數字");
+    //     else
+    //     {
+    //         inputPerNum = defParseInt(pagingPerInput.current.value, 10);
+    //         newPagingCount = pagingCalculate(dataNum, inputPerNum);
+    //         if(inputNum !== ""){
+    //             inputNum = defParseInt(inputNum, currentNum);
+    //             inputNum = inputNum > pagingCount ? pagingCount : inputNum;
+    //             pagingInput.current.value = inputNum;
+    //             newCorrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
+    //             if(newPagingCount < inputNum)
+    //                 setCurrentNum(newPagingCount);
+    //         }else{
+    //             newCorrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
+    //             setCurrentNum(newCorrentNum);
+    //         }
+    //         console.log(3);
+    //         setPagingPer(inputPerNum);
+    //     }
+    // }
 
     return (
         <>
             <PagingBox>
                 {
-                    pagingItems.map(item => {
-                        return <div>{item}</div>
+                    pagingItems.map((item, index) => {
+                        return item !== "..." ? 
+                            item === currentNum ? <div key={item} className="active">{item}</div> : <div key={item} onClick={() => {setCurrentNum(item)}}>{item}</div>
+                            : 
+                            <div key={item + index} className="normal">{item}</div>;
                     })
                 }
-            </PagingBox>
-            <PagingBox>
-                <div>1</div>
-                <div className="normal">...</div>
-                <div>3</div>
-                <div>4</div>
-                <div className="active">5</div>
-                <div>6</div>
-                <div>7</div>
-                <div className="normal">...</div>
-                <div>10</div>
-                <PagingArrow>{"<"}</PagingArrow>
-                <PagingArrow>{">"}</PagingArrow>
+                <PagingArrow $disabled={currentNum === 1} onClick={() => {pagingPrevNext("prev")}}>{"<"}</PagingArrow>
+                <PagingArrow $disabled={currentNum === pagingCount} onClick={() => {pagingPrevNext("next")}}>{">"}</PagingArrow>
                 <div className="normal">
-                    <PagingInput type="text" />
+                    <PagingInput type="text" min="0" max={pagingCount} ref={elm => pagingInput.current = elm} />
                 </div>
-                <div>Go</div>
+                <div onClick={() => {pagingGo()}}>Go</div>
+                <div className="normal">☰</div>
+                <div className="normal">
+                    <PagingInput type="text" placeholder="10" ref={elm => pagingPerInput.current = elm} />
+                </div>
+                {" / " + dataNum}
             </PagingBox>
         </>
     );
