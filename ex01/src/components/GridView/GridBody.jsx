@@ -31,7 +31,7 @@ function GridBody({colsName, colsId, dataItems}) {
         :
         dataItems.map((item, itemIndex) => {
             // return coldsIdR.map((colId, colIndex) => {
-            return colsId.map((colId, colIndex) => {
+            return colsId?.map((colId, colIndex) => {
                 return <Column className={style.gridViewColumn} key={colId + colIndex} $colsNum={colsName.length}>{item[colId]}</Column>
             })
         })

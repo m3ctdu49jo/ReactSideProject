@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Grid from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider from "./GridViewProvider";
@@ -56,16 +56,6 @@ function GridPaging(){
                 c.push({ colId: "productName", colName: "產品名稱" });
                 resolve({d, c});
             }).then(({d, c}) => {
-                
-                const firstIndex = ((pagingNum - 1) * pagingPerNum);
-                const LastIndex = (firstIndex + pagingPerNum) - 1;
-                
-                const filterD = dataItems.filter((_, index) => {
-                    return index >= firstIndex && index <= LastIndex;
-                })
-                setPageData(filterD);   
-
-
                 setDataItems(d);
                 setColumnsName(c);
             });
@@ -74,33 +64,52 @@ function GridPaging(){
     }, []);
 
     
-    useEffect(() => {   
+    // useEffect(() => {   
+    //     const firstIndex = ((pagingNum - 1) * pagingPerNum);
+    //     const LastIndex = (firstIndex + pagingPerNum) - 1;
+        
+    //     async function filterPagingData(){
+    //         await new Promise((resolve) => {            
+    //             const filterD = dataItems.filter((_, index) => {
+    //                 return index >= firstIndex && index <= LastIndex;
+    //             });
+    //             resolve(filterD);
+    //         }).then(d => {
+    //             setPageData(d);
+    //         });
+    //     }
+    //     filterPagingData();
+    // }, [pagingNum, pagingPerNum, dataItems]);
+
+    const pagingEvent = () => {
+
         const firstIndex = ((pagingNum - 1) * pagingPerNum);
         const LastIndex = (firstIndex + pagingPerNum) - 1;
         
-        const filterD = dataItems.filter((_, index) => {
-            return index >= firstIndex && index <= LastIndex;
-        })
-        setPageData(filterD);       
-    }, [pagingNum, pagingPerNum, dataItems]);
+        async function filterPagingData(){
+            await new Promise((resolve) => {            
+                const filterD = dataItems.filter((_, index) => {
+                    return index >= firstIndex && index <= LastIndex;
+                });
+                resolve(filterD);
+            }).then(d => {
+                setPageData(d);
+            });
+        }
+        filterPagingData();
+    };
 
     
     
     useEffect(() => {   
-        const firstIndex = ((pagingNum - 1) * pagingPerNum);
-        const LastIndex = (firstIndex + pagingPerNum) - 1;
-        
         let itemSorted = mutiSort([...dataItems], colsSort);
-        const filterD = itemSorted.filter((_, index) => {
-            return index >= firstIndex && index <= LastIndex;
-        })
-        setPageData(filterD);        
         setDataItems(itemSorted);
     }, [colsSort]);
 
     function pagingChangeHandle(num, perNum){
         setPagingNum(num);
         setPagingPerNum(perNum);
+        pagingEvent();
     }
     function sortChangeHandle(sort){
         setColsSort(sort);

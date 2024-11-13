@@ -38,6 +38,12 @@ const ColumnTitle = styled.div`
 
     }
 `;
+const ColumnTitleNone = styled.div`
+    text-align: center;
+    border-top-width: 1px !important; 
+    background: #d7f3ff;
+    grid-column: span ${props => props.$colsNum}
+`;
 
 function mutiSort(data, sortConditions) {
     return data.sort((a, b) => {
@@ -95,6 +101,8 @@ function GridHeader({columnNameItems, colsName}){
     }
 
     return (
+        !colsName || colsName.length === 0 ?
+            <ColumnTitleNone  className={style.gridViewColumn}  $colsNum={colsName ? colsName.length : 1}>無欄位</ColumnTitleNone> :
         //colsNameR?.map((colName, index) => {
         colsName?.map((colName, index) => {
             // let id = columnNameItemsR.find(x => x.colName === colName).colId;
