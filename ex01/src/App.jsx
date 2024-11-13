@@ -6,8 +6,8 @@ import QuestionBox from "./components/QuestionBox";
 import ArticleBox from "./components/ArticleBox";
 import NewsLoop from "./components/NewsLoop";
 import NewsLoopBox from "./components/NewsLoopBox";
-import GridView from "./components/GridView";
-import Paging from "./components/Paging/Paging";
+import { GridView, GridPaging } from "./components/GridView";
+import Paging from "./components/Paging";
 
 
 //components 以大寫開頭
@@ -21,7 +21,7 @@ export default function App(){
                 {/* <NewsLoop /> */}
                 {/* <NewsLoopBox /> */}
                 {/* <GridView /> */}
-                <Paging />
+                <GridPaging />
             </Provider>
         </>
     );

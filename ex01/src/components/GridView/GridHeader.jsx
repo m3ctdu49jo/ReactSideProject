@@ -60,11 +60,13 @@ function GridHeader({columnNameItems, colsName}){
     const colsSortR = useSelector(state => state.grid.colsSort);
     const dataItemsR = useSelector(state => state.grid.dataItems);
 
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     
     let changeDataSort = async function (colId) {
-        let newSort = [...colsSortR];
-        let index = colsSortR.findIndex(x => x.key === colId);
+        // let newSort = [...colsSortR];
+        // let index = colsSortR.findIndex(x => x.key === colId);
+        let newSort = [...colsSort];
+        let index = colsSort.findIndex(x => x.key === colId);
 
         // 單個排序
         // let itemSorted = [...dataItems].sort((a, b) => {
@@ -75,7 +77,8 @@ function GridHeader({columnNameItems, colsName}){
         // });
 
         if (index >= 0) {
-            newSort[index].asc = !colsSortR[index].asc;
+            // newSort[index].asc = !colsSortR[index].asc;
+            newSort[index].asc = !colsSort[index].asc;
         }
         else {
             newSort.push({
@@ -83,17 +86,21 @@ function GridHeader({columnNameItems, colsName}){
                 asc: true
             });
         }
-        let itemSorted = await mutiSort([...dataItemsR], newSort);
-        //setDataItems(itemSorted);
-        //setColsSort(newSort);
-        dispatch(setDataItemsR(itemSorted));
-        dispatch(setColsSortR(newSort));
+        // let itemSorted = await mutiSort([...dataItemsR], newSort);
+        let itemSorted = await mutiSort([...dataItems], newSort);
+        setDataItems(itemSorted);
+        setColsSort(newSort);
+        // dispatch(setDataItemsR(itemSorted));
+        // dispatch(setColsSortR(newSort));
     }
 
     return (
-        colsNameR.map((colName, index) => {
-            let id = columnNameItemsR.find(x => x.colName === colName).colId;
-            let sort = colsSortR.find(x => x.key === id);
+        //colsNameR?.map((colName, index) => {
+        colsName?.map((colName, index) => {
+            // let id = columnNameItemsR.find(x => x.colName === colName).colId;
+            // let sort = colsSortR.find(x => x.key === id);
+            let id = columnNameItems.find(x => x.colName === colName).colId;
+            let sort = colsSort.find(x => x.key === id);
             return (
                 <ColumnTitle key={colName + index} className={style.gridViewColumn}>
                     {colName}

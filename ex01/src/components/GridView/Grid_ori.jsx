@@ -20,11 +20,11 @@ const GridViewWrap = styled.div`
 `;
 
 // 接收透過元件傳遞進來的參數要使用解構物件方式獲取，否則數據將有可能出錯
-function Grid({data, columnsName, onSortChange}) {
-    const {setDataItems, colsSort} = useGridViewContext();
-    const [columnNameItems, setColumnNameItem] = useState([]);
-    const [colsName, setColsName] = useState([]);
-    const [colsId, setColsId] = useState([]);
+function Grid({data, columnsName}) {
+    const {setDataItems} = useGridViewContext();
+    // const [columnNameItems, setColumnNameItem] = useState([]);
+    // const [colsName, setColsName] = useState([]);
+    // const [colsId, setColsId] = useState([]);
     //const [colsSort, setColsSort] = useState([]);
     const [gridHover, setGridHover] = useState(false);
     const [hover, setHover] = useState(false);
@@ -34,11 +34,23 @@ function Grid({data, columnsName, onSortChange}) {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        //fake
         let d = data && data[0] ? [...data] : [];
         let c = columnsName && columnsName[0] ? [...columnsName] : [];
-        setColumnNameItem(c);
-        // dispatch(setDataItemsR(d));
-        // dispatch(setColumnNameItemR(c));
+        d.push({ orderNum: "A123467", orderSeq: "5", productId: "A1A356866", productName: "網球線" });
+        d.push({ orderNum: "A123456", orderSeq: "1", productId: "A1A356854", productName: "釣魚線1" });
+        d.push({ orderNum: "A123456", orderSeq: "3", productId: "A1A356854", productName: "釣魚線2" });
+        d.push({ orderNum: "A123456", orderSeq: "2", productId: "A1A356854", productName: "釣魚線3" });
+        d.push({ orderNum: "A123456", orderSeq: "2", productId: "A1A356853", productName: "釣魚線3" });
+        d.push({ orderNum: "A123468", orderSeq: "3", productId: "A1A356850", productName: "鞋面" });
+        c.push({ colId: "orderNum", colName: "訂單單號" });
+        c.push({ colId: "orderSeq", colName: "訂單項次" });
+        c.push({ colId: "productId", colName: "產品編號" });
+        c.push({ colId: "productName", colName: "產品名稱" });
+        setDataItems(d);
+        //setColumnNameItem(c);
+        dispatch(setDataItemsR(d));
+        dispatch(setColumnNameItemR(c));
 
         if(!initialDataRef.current)
             initialDataRef.current = d;
@@ -55,16 +67,10 @@ function Grid({data, columnsName, onSortChange}) {
             //setColsName(c.map(i => i.colName));
             //setColsId(c.map(i => i.colId));
         }
-        setColsName(names);
-        setColsId(ids);
-        // dispatch(setColsNameR(names));
-        // dispatch(setColsIdR(ids));
+        dispatch(setColsNameR(names));
+        dispatch(setColsIdR(ids));
 
     }, [data, columnsName, dispatch]);
-
-    useEffect(() => {
-        onSortChange(colsSort);
-    }, [colsSort]);
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
     useDebounce(() => {
@@ -83,10 +89,9 @@ function Grid({data, columnsName, onSortChange}) {
     return (
         <GridViewBox onMouseEnter={() => {setHover(true)}} onMouseLeave={() => {setHover(false)}}>
             <ControlBar gridHover={gridHover} initialDataRef={initialDataRef} />
-            {/* <GridViewWrap $colsNum={colsNameR ? colsNameR.length : []}> */}
-            <GridViewWrap $colsNum={colsName ? colsName.length : []}>
-                <GridHeader columnNameItems={columnNameItems} colsName={colsName} />
-                <GridBody colsId={colsId} colsName={colsName} dataItems={data} />
+            <GridViewWrap $colsNum={colsNameR.length}>
+                <GridHeader />
+                <GridBody />
             </GridViewWrap>
         </GridViewBox>
     );

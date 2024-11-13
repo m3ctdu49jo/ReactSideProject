@@ -18,20 +18,21 @@ const ColumnNone = styled.div`
 `;
 
 
-function GridBody({colsName, colsId}) {
-    const {dataItems} = useGridViewContext();
-    const dataItemsR = useSelector(state => state.grid.dataItems);
-    const colsNameR = useSelector(state => state.grid.colsName);
-    const coldsIdR = useSelector(state => state.grid.colsId);
+function GridBody({colsName, colsId, dataItems}) {
+    // const dataItemsR = useSelector(state => state.grid.dataItems);
+    // const colsNameR = useSelector(state => state.grid.colsName);
+    // const coldsIdR = useSelector(state => state.grid.colsId);
 
     return (
-        dataItemsR.length === 0
+        !dataItems || dataItems.length === 0
         ?
-        <ColumnNone className={style.gridViewColumn} $colsNum={colsNameR.length}>沒有資料</ColumnNone>
+        // <ColumnNone className={style.gridViewColumn} $colsNum={colsNameR ? colsNameR.length : 1}>沒有資料</ColumnNone>
+        <ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsName.length : 1}>沒有資料</ColumnNone>
         :
-        dataItemsR.map((item, itemIndex) => {
-            return coldsIdR.map((colId, colIndex) => {
-                return <Column className={style.gridViewColumn} key={colId + colIndex} $colsNum={colsNameR.length}>{item[colId]}</Column>
+        dataItems.map((item, itemIndex) => {
+            // return coldsIdR.map((colId, colIndex) => {
+            return colsId.map((colId, colIndex) => {
+                return <Column className={style.gridViewColumn} key={colId + colIndex} $colsNum={colsName.length}>{item[colId]}</Column>
             })
         })
     );

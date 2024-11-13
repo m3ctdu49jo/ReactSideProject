@@ -45,13 +45,13 @@ const PagingInput = styled.input`
 `;
 
 function pagingCalculate(dataCount, pagingPerNum){
-    let count;
+    let count = 1;
     count = Math.ceil(dataCount / pagingPerNum);
-    count = count > 1 ? count : 1;
+    count = count > 0 ? count : count;
     return count;
 }
 
-function Paging({dataNum = 200, onPagingChange}){
+function Paging({dataNum = 200}){
     const [currentNum, setCurrentNum] = useState(1);
     const [pagingItems, setPagingItems] = useState([]);
     const maxPagingItem = 5;
@@ -148,7 +148,6 @@ function Paging({dataNum = 200, onPagingChange}){
                 newCurrentNum = currentNum + 1;
         }
         setCurrentNum(newCurrentNum);
-        onPagingChange(newCurrentNum, pagingPer);
     }
 
     function pagingGo(){
@@ -156,15 +155,10 @@ function Paging({dataNum = 200, onPagingChange}){
         setPagingPer(defParseInt(pagingPerInput.current.value, 10));
     }
 
-    function onPagingClick(num){
-        setCurrentNum(num);
-        onPagingChange(num, pagingPer);
-    }
-
     useEffect(() => {
         let inputNum = pagingInput.current.value;
         let inputPerNum = pagingPerInput.current.value;
-        let newPagingCount, newCurrentNum;
+        let newPagingCount, newCorrentNum;
         
         if((!tryParseInt(inputNum) && inputNum !== "") || (!tryParseInt(inputPerNum) && inputPerNum !== ""))
             alert("請輸入數字");
@@ -176,23 +170,22 @@ function Paging({dataNum = 200, onPagingChange}){
                 inputNum = defParseInt(inputNum, currentNum);
                 inputNum = inputNum > pagingCount ? pagingCount : inputNum;
                 pagingInput.current.value = inputNum;
-                newCurrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
+                newCorrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
                 if(newPagingCount < inputNum)
                     setCurrentNum(newPagingCount);
             }else{
-                newCurrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
-                setCurrentNum(newCurrentNum);
+                newCorrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
+                setCurrentNum(newCorrentNum);
             }
             setPagingCount(newPagingCount);
             setPagingPer(inputPerNum);
-            onPagingChange(newCurrentNum, pagingPer);
         }
     }, [dataNum, currentNum, pagingPer]);
 
     // function reviewPaging(){
     //     let inputNum = pagingInput.current.value;
     //     let inputPerNum = pagingPerInput.current.value;
-    //     let newPagingCount, newCurrentNum;
+    //     let newPagingCount, newCorrentNum;
         
     //     if((!tryParseInt(inputNum) && inputNum !== "") || (!tryParseInt(inputPerNum) && inputPerNum !== ""))
     //         alert("請輸入數字");
@@ -204,12 +197,12 @@ function Paging({dataNum = 200, onPagingChange}){
     //             inputNum = defParseInt(inputNum, currentNum);
     //             inputNum = inputNum > pagingCount ? pagingCount : inputNum;
     //             pagingInput.current.value = inputNum;
-    //             newCurrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
+    //             newCorrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
     //             if(newPagingCount < inputNum)
     //                 setCurrentNum(newPagingCount);
     //         }else{
-    //             newCurrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
-    //             setCurrentNum(newCurrentNum);
+    //             newCorrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
+    //             setCurrentNum(newCorrentNum);
     //         }
     //         console.log(3);
     //         setPagingPer(inputPerNum);
@@ -222,7 +215,7 @@ function Paging({dataNum = 200, onPagingChange}){
                 {
                     pagingItems.map((item, index) => {
                         return item !== "..." ? 
-                            item === currentNum ? <div key={item} className="active">{item}</div> : <div key={item} onClick={() => {onPagingClick(item)}}>{item}</div>
+                            item === currentNum ? <div key={item} className="active">{item}</div> : <div key={item} onClick={() => {setCurrentNum(item)}}>{item}</div>
                             : 
                             <div key={item + index} className="normal">{item}</div>;
                     })

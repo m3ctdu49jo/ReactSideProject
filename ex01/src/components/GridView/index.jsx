@@ -1,17 +1,4 @@
-import Grid from "./Grid";
-import GridViewProvider from "./GridViewProvider"
+import GridView from "./GridView";
+import GridPaging from "./GridPaging";
 
-
-function GridView(){
-
-    return (
-        <GridViewProvider>
-            <Grid />
-        </GridViewProvider>
-    );
-}
-
-
-export default GridView;   
-
-//export { default } from "./GridView2"   //直接將預設匯出轉發
+export { GridView, GridPaging };   
