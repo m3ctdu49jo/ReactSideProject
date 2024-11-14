@@ -8,6 +8,8 @@ const PagingBox = styled.div`
     font-family: sans-serif;
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin-top: 10px;
 
     div {
         padding: .3rem .5rem;
@@ -51,7 +53,7 @@ function pagingCalculate(dataCount, pagingPerNum){
     return count;
 }
 
-function Paging({dataNum = 200, onPagingChange}){
+function Paging({dataNum = 200, onPagingChange, currentNumToFirst}){
     const [currentNum, setCurrentNum] = useState(1);
     const [pagingItems, setPagingItems] = useState([]);
     const maxPagingItem = 5;
@@ -162,6 +164,11 @@ function Paging({dataNum = 200, onPagingChange}){
     }
 
     useEffect(() => {
+        if(currentNumToFirst)
+            setCurrentNum(1);
+    }, [currentNumToFirst]);
+
+    useEffect(() => {
         let inputNum = pagingInput.current.value;
         let inputPerNum = pagingPerInput.current.value;
         let newPagingCount, newCurrentNum;
@@ -185,7 +192,6 @@ function Paging({dataNum = 200, onPagingChange}){
             }
             setPagingCount(newPagingCount);
             setPagingPer(inputPerNum);
-            onPagingChange(newCurrentNum, pagingPer);
         }
     }, [dataNum, currentNum, pagingPer]);
 

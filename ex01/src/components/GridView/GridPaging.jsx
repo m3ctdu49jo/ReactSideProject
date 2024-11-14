@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Grid from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider from "./GridViewProvider";
+import style from "../../styles/style.module.css"
 
 
 function mutiSort(data, sortConditions) {
@@ -25,10 +26,13 @@ function GridPaging(){
     const [pageData, setPageData] = useState([]);
     const [colsSort, setColsSort] = useState([]);
     const [columnsName, setColumnsName] = useState([]);
+    const [resetData, setResetData] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [pagingToFirst, setPagingToFirst] = useState(false);
 
     useEffect(() => {     
         async function fetchData(){
-            await new Promise((resolve, reject) => {             
+            const t = await new Promise((resolve) => {             
                 let d = [];
                 let c = [];
                 //Fake data
@@ -55,53 +59,38 @@ function GridPaging(){
                 c.push({ colId: "productId", colName: "產品編號" });
                 c.push({ colId: "productName", colName: "產品名稱" });
                 resolve({d, c});
-            }).then(({d, c}) => {
-                setDataItems(d);
-                setColumnsName(c);
             });
+            setDataItems(t.d);
+            setColumnsName(t.c);
+            setIsLoading(false);
+            setPagingToFirst(true);
+            setPagingNum(1);
         }
         fetchData();
-    }, []);
+    }, [resetData]);
 
     
-    // useEffect(() => {   
-    //     const firstIndex = ((pagingNum - 1) * pagingPerNum);
-    //     const LastIndex = (firstIndex + pagingPerNum) - 1;
-        
-    //     async function filterPagingData(){
-    //         await new Promise((resolve) => {            
-    //             const filterD = dataItems.filter((_, index) => {
-    //                 return index >= firstIndex && index <= LastIndex;
-    //             });
-    //             resolve(filterD);
-    //         }).then(d => {
-    //             setPageData(d);
-    //         });
-    //     }
-    //     filterPagingData();
-    // }, [pagingNum, pagingPerNum, dataItems]);
-
-    const pagingEvent = () => {
+    useEffect(() => {   
+        if(!dataItems || dataItems.length === 0)
+            return;
 
         const firstIndex = ((pagingNum - 1) * pagingPerNum);
         const LastIndex = (firstIndex + pagingPerNum) - 1;
-        
-        async function filterPagingData(){
-            await new Promise((resolve) => {            
-                const filterD = dataItems.filter((_, index) => {
-                    return index >= firstIndex && index <= LastIndex;
-                });
-                resolve(filterD);
-            }).then(d => {
-                setPageData(d);
-            });
-        }
-        filterPagingData();
-    };
-
-    
+             
+        const filterD = dataItems.filter((_, index) => {
+            return index >= firstIndex && index <= LastIndex;
+        });
+        setPageData(filterD);
+        setPagingToFirst(false);
+    }, [pagingNum, pagingPerNum, dataItems]);
     
     useEffect(() => {   
+        if(!dataItems || dataItems.length === 0 || resetData)
+            return;
+        if(colsSort.length === 0){
+            setPagingToFirst(true);
+            setPagingNum(1);
+        }
         let itemSorted = mutiSort([...dataItems], colsSort);
         setDataItems(itemSorted);
     }, [colsSort]);
@@ -109,16 +98,18 @@ function GridPaging(){
     function pagingChangeHandle(num, perNum){
         setPagingNum(num);
         setPagingPerNum(perNum);
-        pagingEvent();
     }
     function sortChangeHandle(sort){
         setColsSort(sort);
     }
+    function resetDataHandle(reset){
+        setResetData(reset);
+    }
 
     return (
         <GridViewProvider>
-            <Grid data={pageData} columnsName={columnsName} onSortChange={sortChangeHandle} />
-            <Paging dataNum={dataItems ? dataItems.length : 0} onPagingChange={pagingChangeHandle} />
+            <Grid data={pageData} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} />
+            <Paging dataNum={dataItems ? dataItems.length : 0} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />
         </GridViewProvider>
     );
 }

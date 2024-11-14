@@ -63,33 +63,34 @@ const ControlBox = styled.div`
 
 function ControlBar({gridHover, initialDataRef}){
 
-    //const {setDataItems, setColsSort} = useGridViewContext();
-    const dispatch = useDispatch();
+    const {dataItems, setDataItems, colsSort, setColsSort, resetData, setResetData} = useGridViewContext();
+    //const dispatch = useDispatch();
     
-    function resetData(){
+    function reset(){
         // let d = [...initialDataRef.current];
         // d.push({ orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" });
         // initialDataRef.current = d;
-        let addItem = { orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" };
-        dispatch(addDataItemsR([addItem]));
-        initialDataRef.current = [...initialDataRef.current, addItem];
+        // let addItem = { orderNum: "A124469", orderSeq: "1", productId: "A1A356950", productName: "紡織布" };
+        // dispatch(addDataItemsR([addItem]));
+        // initialDataRef.current = [...initialDataRef.current, addItem];
         resetSortAndInitData();
 
     }
     function resetSortAndInitData(){
-        //setColsSort([]);
-        dispatch(setColsSortR([]));
+        setColsSort([]);
+        //dispatch(setColsSortR([]));
         resetInitData();
     }
 
     function resetInitData(){
+        setResetData(true);
         //setDataItems(initialDataRef.current);
-        dispatch(setDataItemsR(initialDataRef.current));
+        //dispatch(setDataItemsR(initialDataRef.current));
     }
     return (
         <ControlBox $hover={gridHover}>
             <div title="重製排序" onClick={() => resetSortAndInitData()}>⥯</div>
-            <div title="資料重整" onClick={() => resetData()}>↻</div>
+            <div title="資料重整" onClick={() => reset()}>↻</div>
         </ControlBox>
     );
 }
