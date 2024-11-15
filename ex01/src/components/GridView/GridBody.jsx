@@ -1,8 +1,6 @@
 import React from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
-import { useGridViewContext } from "./GridViewProvider";
-import { useSelector } from "react-redux";
 
 
 const Column = styled.div`
@@ -19,18 +17,13 @@ const ColumnNone = styled.div`
 
 
 function GridBody({colsName, colsId, dataItems}) {
-    // const dataItemsR = useSelector(state => state.grid.dataItems);
-    // const colsNameR = useSelector(state => state.grid.colsName);
-    // const coldsIdR = useSelector(state => state.grid.colsId);
 
     return (
         !dataItems || dataItems.length === 0
         ?
-        // <ColumnNone className={style.gridViewColumn} $colsNum={colsNameR ? colsNameR.length : 1}>沒有資料</ColumnNone>
         <ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsName.length : 1}>沒有資料</ColumnNone>
         :
-        dataItems.map((item, itemIndex) => {
-            // return coldsIdR.map((colId, colIndex) => {
+        dataItems.map((item) => {
             return colsId?.map((colId, colIndex) => {
                 return <Column className={style.gridViewColumn} key={colId + colIndex} $colsNum={colsName.length}>{item[colId]}</Column>
             })

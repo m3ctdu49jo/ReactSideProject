@@ -6,7 +6,7 @@ import { tryParseInt, defParseInt} from "../../lib";
 const PagingBox = styled.div`
     font-size: .7rem;
     font-family: sans-serif;
-    display: flex;
+    display: ${props => props.$noData ? "none" : "flex"};
     align-items: center;
     justify-content: center;
     margin-top: 10px;
@@ -53,7 +53,7 @@ function pagingCalculate(dataCount, pagingPerNum){
     return count;
 }
 
-function Paging({dataNum = 200, onPagingChange, currentNumToFirst}){
+function Paging({dataNum, onPagingChange, currentNumToFirst}){
     const [currentNum, setCurrentNum] = useState(1);
     const [pagingItems, setPagingItems] = useState([]);
     const maxPagingItem = 5;
@@ -62,6 +62,7 @@ function Paging({dataNum = 200, onPagingChange, currentNumToFirst}){
     const [pagingCount, setPagingCount] = useState(1);
     const [pagingPer, setPagingPer] = useState(10);
 
+    // 分頁數處理
     useEffect(() => {        
         let pagings = [];
         let pagingPer = pagingPerInput.current.value;
@@ -168,13 +169,14 @@ function Paging({dataNum = 200, onPagingChange, currentNumToFirst}){
             setCurrentNum(1);
     }, [currentNumToFirst]);
 
+    // 每頁顯示筆數, 頁數跳轉處理
     useEffect(() => {
         let inputNum = pagingInput.current.value;
         let inputPerNum = pagingPerInput.current.value;
         let newPagingCount, newCurrentNum;
         
         if((!tryParseInt(inputNum) && inputNum !== "") || (!tryParseInt(inputPerNum) && inputPerNum !== ""))
-            alert("請輸入數字");
+            alert("每頁顯示筆數, 跳轉頁數 請輸入數字");
         else
         {
             inputPerNum = defParseInt(pagingPerInput.current.value, 10);
@@ -195,36 +197,9 @@ function Paging({dataNum = 200, onPagingChange, currentNumToFirst}){
         }
     }, [dataNum, currentNum, pagingPer]);
 
-    // function reviewPaging(){
-    //     let inputNum = pagingInput.current.value;
-    //     let inputPerNum = pagingPerInput.current.value;
-    //     let newPagingCount, newCurrentNum;
-        
-    //     if((!tryParseInt(inputNum) && inputNum !== "") || (!tryParseInt(inputPerNum) && inputPerNum !== ""))
-    //         alert("請輸入數字");
-    //     else
-    //     {
-    //         inputPerNum = defParseInt(pagingPerInput.current.value, 10);
-    //         newPagingCount = pagingCalculate(dataNum, inputPerNum);
-    //         if(inputNum !== ""){
-    //             inputNum = defParseInt(inputNum, currentNum);
-    //             inputNum = inputNum > pagingCount ? pagingCount : inputNum;
-    //             pagingInput.current.value = inputNum;
-    //             newCurrentNum = newPagingCount < inputNum ? newPagingCount : inputNum;
-    //             if(newPagingCount < inputNum)
-    //                 setCurrentNum(newPagingCount);
-    //         }else{
-    //             newCurrentNum = newPagingCount < currentNum ? newPagingCount : currentNum;
-    //             setCurrentNum(newCurrentNum);
-    //         }
-    //         console.log(3);
-    //         setPagingPer(inputPerNum);
-    //     }
-    // }
-
     return (
         <>
-            <PagingBox>
+            <PagingBox $noData={dataNum === 0}>
                 {
                     pagingItems.map((item, index) => {
                         return item !== "..." ? 

@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider from "./GridViewProvider";
-import style from "../../styles/style.module.css"
 
 
 function mutiSort(data, sortConditions) {
