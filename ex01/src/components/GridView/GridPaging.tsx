@@ -2,13 +2,21 @@ import React, { useEffect, useState } from "react";
 import Grid from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider from "./GridViewProvider";
+import { NodeArray } from "typescript";
 
+interface SortCondition<T> {
+    key: keyof T;   // 限制 key 必須是 IdataItems 的屬性名稱
+    asc: boolean;
+}
 
-function mutiSort(data, sortConditions) {
+function mutiSort<T>(data: T[], sortConditions: SortCondition<T>[]): T[] {
     return data.sort((a, b) => {
         for (let condition of sortConditions) {
             const { key, asc = true } = condition;
-            const diff = (a[key] > b[key]) - (a[key] < b[key]);
+            // const valA = a[key as keyof IdataItems];    //型別斷言來
+            // const valB = b[key as keyof IdataItems];
+            // const diff = (valA > valB ? 1 : -1) - (valA < valB ? 1 : -1);
+            const diff = (a[key] > b[key] ? 1 : -1) - (a[key] < b[key] ? 1 : -1);
 
             if (diff !== 0) {
                 return asc ? diff : -diff;
@@ -18,22 +26,39 @@ function mutiSort(data, sortConditions) {
     });
 }
 
+interface IdataItems {
+    orderNum: string;
+    orderSeq: string;
+    productId: string;
+    productName: string;
+    //[key: string]: string;  // 添加索引簽名，允許使用任意 string 作為鍵 a[key], b[key]
+}
+interface IcolumnsName {
+    colId: string;
+    colName: string;
+}
+interface Idata {
+    d: IdataItems[];
+    c: IcolumnsName[];
+}
+
+
 function GridPaging(){
-    const [pagingNum, setPagingNum] = useState(1);
-    const [pagingPerNum, setPagingPerNum] = useState(10);
-    const [dataItems, setDataItems] = useState([]);
-    const [pageData, setPageData] = useState([]);
-    const [colsSort, setColsSort] = useState([]);
-    const [columnsName, setColumnsName] = useState([]);
-    const [resetData, setResetData] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [pagingToFirst, setPagingToFirst] = useState(false);
+    const [pagingNum, setPagingNum] = useState<number>(1);
+    const [pagingPerNum, setPagingPerNum] = useState<number>(10);
+    const [dataItems, setDataItems] = useState<IdataItems[]>([]);
+    const [pageData, setPageData] = useState<IdataItems[]>([]);
+    const [colsSort, setColsSort] = useState<SortCondition<IdataItems>[]>([]);
+    const [columnsName, setColumnsName] = useState<IcolumnsName[]>([]);
+    const [resetData, setResetData] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
 
     useEffect(() => {     
         async function fetchData(){
-            const t = await new Promise((resolve) => {             
-                let d = [];
-                let c = [];
+            const t: Idata = await new Promise((resolve) => {             
+                let d: IdataItems[] = [];
+                let c: IcolumnsName[] = [];
                 //Fake data
                 d.push({ orderNum: "A123467", orderSeq: "5", productId: "A1A356866", productName: "網球線" });
                 d.push({ orderNum: "A123456", orderSeq: "1", productId: "A1A356854", productName: "釣魚線1" });
@@ -76,7 +101,7 @@ function GridPaging(){
         const firstIndex = ((pagingNum - 1) * pagingPerNum);
         const LastIndex = (firstIndex + pagingPerNum) - 1;
              
-        const filterD = dataItems.filter((_, index) => {
+        const filterD: IdataItems[] = dataItems.filter((_, index) => {
             return index >= firstIndex && index <= LastIndex;
         });
         setPageData(filterD);
@@ -94,14 +119,14 @@ function GridPaging(){
         setDataItems(itemSorted);
     }, [colsSort]);
 
-    function pagingChangeHandle(num, perNum){
+    function pagingChangeHandle(num: number, perNum: number){
         setPagingNum(num);
         setPagingPerNum(perNum);
     }
-    function sortChangeHandle(sort){
+    function sortChangeHandle(sort: SortCondition<IdataItems>[]){
         setColsSort(sort);
     }
-    function resetDataHandle(reset){
+    function resetDataHandle(reset: boolean){
         setResetData(reset);
     }
 

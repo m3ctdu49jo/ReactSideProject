@@ -4,8 +4,10 @@
  * @param {string | number} strNum - 要轉換的字串或數字。
  * @returns {boolean}
  */
-function tryParseInt(strNum){
-    let isNum = (/^\d*$/).test(strNum) && strNum;
+function tryParseInt(strNum: string | number): boolean{
+    let isNum: boolean = true;
+    if (typeof strNum === "string")
+        isNum = (/^\d*$/).test(strNum) && typeof strNum !== "undefined" && strNum != null;
     return isNum;
 }
 
@@ -16,8 +18,12 @@ function tryParseInt(strNum){
  * @param {number} defaultNum - 當 `strNum` 無法轉換為整數時回傳的預設值。
  * @returns {number} - 轉換成功的整數，或 `defaultNum` 作為預設值。
  */
-function defParseInt(strNum, defaultNum) {
-    return tryParseInt(strNum) ? parseInt(strNum) : defaultNum;
+function defParseInt(strNum: string | number, defaultNum: number): number {
+    let n: number = defaultNum;
+    if (typeof strNum === "string" && tryParseInt(strNum))
+        n = parseInt(strNum);
+
+    return n;
 }
 
 export {tryParseInt, defParseInt}
