@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Grid from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider from "./GridViewProvider";
-import { NodeArray } from "typescript";
 
 interface SortCondition<T> {
     key: keyof T;   // 限制 key 必須是 IdataItems 的屬性名稱

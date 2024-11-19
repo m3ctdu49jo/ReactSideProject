@@ -63,7 +63,7 @@ function pagingCalculate(dataCount: number, pagingPerNum: number){
     return count;
 }
 
-function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;onPagingChange: Function; currentNumToFirst: Function;}){
+function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;onPagingChange: Function; currentNumToFirst: boolean;}){
     const [currentNum, setCurrentNum] = useState(1);
     const [pagingItems, setPagingItems] = useState<(string | number)[]>([]);
     const maxPagingItem = 5;

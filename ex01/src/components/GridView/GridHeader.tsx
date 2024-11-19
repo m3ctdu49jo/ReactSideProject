@@ -1,7 +1,7 @@
 import React from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
-import { useGridViewContext } from "./GridViewProvider";
+import { useGridViewContext, GridViewProviderProps } from "./GridViewProvider";
 
 const ColumnTitle = styled.div`
     background: #d7f3ff;
@@ -57,10 +57,10 @@ function mutiSort(data, sortConditions) {
     });
 }
 
-function GridHeader({columnNameItems, colsName}){
-    const {dataItems, setDataItems, colsSort, setColsSort} = useGridViewContext();
+function GridHeader<T, K>({columnNameItems, colsName}: {columnNameItems: string[], colsName: string[]}){
+    const {dataItems, setDataItems, colsSort, setColsSort}: GridViewProviderProps<T, K> = useGridViewContext();
     
-    let changeDataSort = async function (colId) {
+    let changeDataSort = async function (colId: keyof T) {
         let newSort = [...colsSort];
         let index = colsSort.findIndex(x => x.key === colId);
 
