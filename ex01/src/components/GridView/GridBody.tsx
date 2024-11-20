@@ -22,7 +22,14 @@ interface ColumnProps {
 }
 
 
-function GridBody<T>({colsName, colsId, dataItems}: {colsName: string[], colsId: [keyof T], dataItems: T[]}) {
+export interface GridBodyProps<T> {
+    colsId: Array<keyof T>;
+    colsName: string[];
+    dataItems: T[];
+}
+
+
+function GridBody<T>({colsName, colsId, dataItems}: GridBodyProps<T>) {
 
     return (
         !dataItems || dataItems.length === 0
