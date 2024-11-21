@@ -3,20 +3,17 @@ import styled from "styled-components";
 import { tryParseInt, defParseInt} from "../../lib";
 
 interface PagingBoxProps {
-    noData: boolean;
-    children: React.ReactNode;
+    $noData: boolean;
 }
 
 interface PagingArrowProps {
-    disabled: boolean;
-    onClick: Function;
-    children: React.ReactNode;
+    $disabled: boolean;
 }
 
-const PagingBox = ({noData}: PagingBoxProps) => styled.div`
+const PagingBox = styled.div<PagingBoxProps>`
     font-size: .7rem;
     font-family: sans-serif;
-    display: ${noData ? "none" : "flex"};
+    display: ${props => props.$noData ? "none" : "flex"};
     align-items: center;
     justify-content: center;
     margin-top: 10px;
@@ -43,11 +40,11 @@ const PagingBox = ({noData}: PagingBoxProps) => styled.div`
         padding-right: 0;
     }
 `;
-const PagingArrow = ({disabled}: PagingArrowProps) => styled.div`
-    color: ${disabled ? "#888 !important" : "inherit"};
-    background: ${disabled ? "#d5d5d5 !important" : "inherit"};
+const PagingArrow = styled.div<PagingArrowProps>`
+    color: ${props => props.$disabled ? "#888 !important" : "inherit"};
+    background: ${props => props.$disabled ? "#d5d5d5 !important" : "inherit"};
     border: 1px solid #ddd;
-    cursor: ${disabled ? "not-allowed !important" : "inherit"};
+    cursor: ${props => props.$disabled ? "not-allowed !important" : "inherit"};
 `;
 const PagingInput = styled.input`
     font-size: .7rem;
@@ -213,7 +210,7 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;on
 
     return (
         <>
-            <PagingBox noData={dataNum === 0}>
+            <PagingBox $noData={dataNum === 0}>
                 {
                     pagingItems.map((item, index) => {
                         let n = defParseInt(item, 0);
@@ -223,8 +220,8 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;on
                             <div key={item + index} className="normal">{item}</div>;
                     })
                 }
-                <PagingArrow disabled={currentNum === 1} onClick={() => {pagingPrevNext("prev")}}>{"<"}</PagingArrow>
-                <PagingArrow disabled={currentNum === pagingCount} onClick={() => {pagingPrevNext("next")}}>{">"}</PagingArrow>
+                <PagingArrow $disabled={currentNum === 1} onClick={() => {pagingPrevNext("prev")}}>{"<"}</PagingArrow>
+                <PagingArrow $disabled={currentNum === pagingCount} onClick={() => {pagingPrevNext("next")}}>{">"}</PagingArrow>
                 <div className="normal">
                     <PagingInput type="text" min="0" max={pagingCount} ref={elm => pagingInput.current = elm} />
                 </div>

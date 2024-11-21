@@ -2,7 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { useGridViewContext } from "./GridViewProvider";
 
-const ControlBox = styled.div`
+const ControlBox = styled.div.withConfig({
+        shouldForwardProp: (prop) => prop !== "gridhover"   // boolean 參數，過濾不應傳遞到 DOM 的屬性
+    })<ControlBoxProps>`
     color: #999;
     line-height: 1;
     display: flex;
@@ -10,8 +12,8 @@ const ControlBox = styled.div`
     padding: .3rem .7rem;
     position: absolute;
     transition: transform .5s ease, opacity .5s ease;
-    transform: translateY(${props => props.$hover ? "-33px" : "0"});
-    opacity: ${props => props.$hover ? 1 : 0};
+    transform: translateY(${(props) => (props.gridhover ? "-33px" : "0")});
+    opacity: ${(props) => (props.gridhover ? 1 : 0)};
     right: 0;
     border: 1px solid #ddd;
     border-radius: 3px;
@@ -57,9 +59,13 @@ const ControlBox = styled.div`
     }
 `;
 
+interface ControlBoxProps {
+    gridhover: boolean;
+    children: React.ReactNode;
+}
 
 
-function ControlBar({gridHover}){
+function ControlBar({gridHover}: {gridHover: boolean}){
 
     const { setColsSort, setResetData } = useGridViewContext();
     
@@ -76,7 +82,7 @@ function ControlBar({gridHover}){
         setResetData(true);
     }
     return (
-        <ControlBox $hover={gridHover}>
+        <ControlBox gridhover={gridHover}>
             <div title="重製排序" onClick={() => resetSortAndInitData()}>⥯</div>
             <div title="資料重整" onClick={() => reset()}>↻</div>
         </ControlBox>

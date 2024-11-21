@@ -36,24 +36,25 @@ const ColumnTitle = styled.div`
 
     }
 `;
-const ColumnTitleNone = ({colsNum}: ColumnTitleNoneProps) => styled.div`
+const ColumnTitleNone = styled.div<ColumnTitleNoneProps>`
     text-align: center;
     border-top-width: 1px !important; 
     background: #d7f3ff;
-    grid-column: span ${colsNum}
+    grid-column: span ${(props) => (props.$colsNum)};
 `;
 
 interface ColumnTitleNoneProps {
-    colsNum: number;
-    className: string;
-    children: React.ReactNode;
+    $colsNum: number;
 }
 
-function mutiSort(data, sortConditions) {
+function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
     return data.sort((a, b) => {
         for (let condition of sortConditions) {
             const { key, asc = true } = condition;
-            const diff = (a[key] > b[key]) - (a[key] < b[key]);
+            // const valA = a[key as keyof IdataItems];    //型別斷言來
+            // const valB = b[key as keyof IdataItems];
+            // const diff = (valA > valB ? 1 : -1) - (valA < valB ? 1 : -1);
+            const diff = (a[key] > b[key] ? 1 : -1) - (a[key] < b[key] ? 1 : -1);
 
             if (diff !== 0) {
                 return asc ? diff : -diff;
@@ -63,7 +64,12 @@ function mutiSort(data, sortConditions) {
     });
 }
 
-function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName}: {columnNameItems: K[], colsName: string[]}){
+interface GridHeaderProps<K> {
+    columnNameItems: K[];
+    colsName: string[];
+}
+
+function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName}: GridHeaderProps<K>){
     const {dataItems, setDataItems, colsSort, setColsSort} = useGridViewContext<T>();
     
     let changeDataSort = async function (colId: keyof T) {
@@ -93,22 +99,28 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
     }
 
     return (
-        !colsName || colsName.length === 0 ?
-            <ColumnTitleNone  className={style.gridViewColumn}  colsNum={colsName ? colsName.length : 1}>無欄位</ColumnTitleNone> :
-        colsName?.map((colName, index) => {
-            let id = "";
-            let sort = colsSort.find(x => x.key === id);
+        <>
+            {
+                
+                !colsName || colsName.length === 0 ?
+                <ColumnTitleNone  className={style.gridViewColumn} $colsNum={colsName ? colsName.length : 1}>無欄位</ColumnTitleNone> 
+                :
+                colsName?.map((colName, index) => {
+                    let id: keyof T;
+                    let sort = colsSort.find(x => x.key === id);
 
-            if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
-                id =  columnNameItems.find(x => x.colName === colName)?.colId;
+                    if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
+                        id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;
 
-            return (
-                <ColumnTitle key={colName + index} className={style.gridViewColumn}>
-                    {colName}
-                    <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
-                </ColumnTitle>
-            )
-        })
+                    return (
+                        <ColumnTitle key={colName + index} className={style.gridViewColumn}>
+                            {colName}
+                            <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
+                        </ColumnTitle>
+                    )
+                })
+            }
+        </>
     );
 }
 

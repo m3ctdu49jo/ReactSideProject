@@ -11,14 +11,13 @@ const GridViewBox = styled.div`
     margin: 50px auto 0;
     position: relative;
 `;
-const GridViewWrap = ({colsNum}:GridViewWrapProps) => styled.div`
+const GridViewWrap = styled.div<GridViewWrapProps>`
     display: grid;
-    grid-template-columns: repeat(${colsNum}, 1fr);
+    grid-template-columns: repeat(${props => props.$colsNum}, 1fr);
 `;
 
 interface GridViewWrapProps {
-    colsNum: number;
-    children: React.ReactNode;
+    $colsNum: number;
 }
 
 interface GridProps<T, K> {
@@ -36,7 +35,7 @@ function Grid<T extends Object, K extends {colName: string, colId: string}>({dat
     const [colsName, setColsName] = useState<string[]>([]);
     const [colsId, setColsId] = useState<Array<keyof T>>([]);
     const [gridHover, setGridHover] = useState<boolean>(false);
-    const [hover, setHover] = useState<boolean>(false);
+    const [timeoutHover, setTimeoutHover] = useState<boolean>(false);
 
     useEffect(() => {
         let d = data && data[0] ? [...data] : [];
@@ -68,22 +67,22 @@ function Grid<T extends Object, K extends {colName: string, colId: string}>({dat
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
     useDebounce(() => {
-        if(hover)
+        if(timeoutHover)
             setGridHover(true);
         else
             handleMouseLeave();
-    }, 200, [hover, gridHover]);
+    }, 200, [timeoutHover, gridHover]);
     const handleMouseLeave = () => {
         setTimeout(() => {
-            if(!hover)
+            if(!timeoutHover)
                 setGridHover(false);
         }, 500);
     };
 
     return (
-        <GridViewBox onMouseEnter={() => {setHover(true)}} onMouseLeave={() => {setHover(false)}}>
+        <GridViewBox onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
             <ControlBar gridHover={gridHover} />
-            <GridViewWrap colsNum={colsName ? colsName.length : 1}>
+            <GridViewWrap $colsNum={colsName ? colsName.length : 1}>
                 <GridHeader columnNameItems={columnNameItems} colsName={colsName} />
                 <GridBody colsId={colsId} colsName={colsName} dataItems={data} />
             </GridViewWrap>

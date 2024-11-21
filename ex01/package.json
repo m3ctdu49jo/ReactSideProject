@@ -33,6 +33,7 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^18.3.12"
+    "@types/react": "^18.3.12",
+    "@types/styled-components": "^5.1.34"
   }
 }
