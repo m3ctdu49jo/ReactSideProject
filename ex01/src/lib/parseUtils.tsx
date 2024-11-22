@@ -4,10 +4,10 @@
  * @param {string | number} strNum - 要轉換的字串或數字。
  * @returns {boolean}
  */
-function tryParseInt(strNum: string | number): boolean{
+function tryParseInt(strNum: string | number): boolean {
     let isNum: boolean = true;
     if (typeof strNum === "string")
-        isNum = (/^\d*$/).test(strNum) && typeof strNum !== "undefined" && strNum != null;
+        isNum = (/^\d*$/).test(strNum);
     return isNum;
 }
 
@@ -19,10 +19,12 @@ function tryParseInt(strNum: string | number): boolean{
  * @returns {number} - 轉換成功的整數，或 `defaultNum` 作為預設值。
  */
 function defParseInt(strNum: string | number, defaultNum: number): number {
-    let n: number = defaultNum;
+    let n: number = defaultNum;    
+    strNum = strNum === "" ? defaultNum : strNum;
     if (typeof strNum === "string" && tryParseInt(strNum))
         n = parseInt(strNum);
-
+    else if(typeof strNum === "number")
+        n = strNum;
     return n;
 }
 

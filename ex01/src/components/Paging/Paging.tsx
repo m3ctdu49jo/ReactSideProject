@@ -57,51 +57,60 @@ function pagingCalculate(dataCount: number, pagingPerNum: number){
     let count;
     count = Math.ceil(dataCount / pagingPerNum);
     count = count > 1 ? count : 1;
+    
     return count;
 }
 
-function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;onPagingChange: Function; currentNumToFirst: boolean;}){
+interface PagingProps {
+    dataNum:number;
+    onPagingChange: (currentNum: number, perNum: number) => void;
+    currentNumToFirst: boolean;
+}
+
+function Paging({dataNum, onPagingChange, currentNumToFirst}: PagingProps){
     const [currentNum, setCurrentNum] = useState(1);
     const [pagingItems, setPagingItems] = useState<(string | number)[]>([]);
-    const maxPagingItem = 5;
     const pagingInput = useRef<HTMLInputElement | null>(null);
     const pagingPerInput = useRef<HTMLInputElement | null>(null);
-    const [pagingCount, setPagingCount] = useState(1);
-    const [pagingPer, setPagingPer] = useState(10);
+    const [pagingCount, setPagingCount] = useState<number>(1);
+    const [pagingPer, setPagingPer] = useState<number>(10);
+    const defPerNum: number = 10;
+    const maxPagingItem = 5;
 
     // 分頁數處理
     useEffect(() => {        
         let pagings: (string | number)[] = [];
-        let pagingPer: string | number = !pagingPerInput || !pagingPerInput.current ? "10" : pagingPerInput.current.value;
+        let pagingPerNum: number = 10;
+        let pagingPerVal: string = !pagingPerInput || !pagingPerInput.current ? "10" : pagingPerInput.current.value;
         let count = 1;
 
 
-        if(!tryParseInt(pagingPer)){
+        if(!tryParseInt(pagingPerVal)){
             alert("請輸入數字");
             return;
         }
-        pagingPer = defParseInt(pagingPer, 10);
-        pagingPer = pagingPer <= 0 ? 10 : pagingPer;
-        setPagingPer(pagingPer);
+        pagingPerNum = defParseInt(pagingPerVal, defPerNum);
+        pagingPerNum = pagingPerNum <= 0 ? defPerNum : pagingPerNum;
+        setPagingPer(pagingPerNum);
 
-        count = pagingCalculate(dataNum, pagingPer);
+        count = pagingCalculate(dataNum, pagingPerNum);
         setPagingCount(count);
 
-        if(maxPagingItem >= count){
+        if(count <= 10){
             for(let i = 1;;){
                 pagings.push(i);
                 if(i >= count)
                     break;
                 i++;
             }
-        }   // 1 2 3 4
+        }   // 1 2 3 4 5 6 7 8 9 10
         
-        if(maxPagingItem < count && currentNum + 3 >= count){
+        else if(maxPagingItem < count && currentNum + 4 > count){
             let beginNum;
             pagings.push(1);
             pagings.push("...");
-            if(currentNum - 2 === 1)
-                beginNum = 3;
+            if(currentNum - 3 === 1)
+                beginNum = 4;
             else
                 beginNum = count - 4;
 
@@ -111,9 +120,9 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;on
                     break;
                 beginNum++;
             }
-        }   // 1 ... 4 5 6 7 8 9
+        }   // 1 ... 15 16 17 18 19 20
         
-        if(count > maxPagingItem && currentNum + 3 <= count && currentNum <= 4){
+        else if(count > maxPagingItem && currentNum + 3 <= count && currentNum < maxPagingItem){
             let beginNum: number = 1;
             if(currentNum - 3 <= 1)
                 beginNum = 1;
@@ -126,7 +135,7 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;on
             pagings.push(count);
         }   // 1 2 3 4 5 ... 20
 
-        if(count >= 10 && currentNum < count - 2 && currentNum - 3 > 1 && currentNum + 4 <= count){
+        else if(count >= 9 && currentNum < count - 2 && currentNum - 3 > 1 && currentNum + 4 <= count){
             let beginNum;
             pagings.push(1);
             pagings.push("...");
@@ -161,12 +170,21 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;on
     }
 
     function pagingGo(){
+        let c = currentNum;
+        let p = pagingPer;
+        let newCount;
         if(pagingInput?.current){
-            setCurrentNum(defParseInt(pagingInput.current.value, 1));
+            c = defParseInt(pagingInput.current.value, 1);
+            newCount = pagingCalculate(dataNum, p);
+            c = c > newCount ? newCount : (c === 0 ? 1 : c);
+            setCurrentNum(c);
         }
         if(pagingPerInput?.current){
-            setPagingPer(defParseInt(pagingPerInput.current.value, 10));
+            p = defParseInt(pagingPerInput.current.value, defPerNum);
+            p = p === 0 ? defPerNum : p;
+            setPagingPer(p);
         }
+        onPagingChange(c, p);
     }
 
     function onPagingClick(num: number){
@@ -189,7 +207,7 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: {dataNum:number;on
             alert("每頁顯示筆數, 跳轉頁數 請輸入數字");
         else
         {
-            inputPerNum = pagingPerInput.current ? defParseInt(pagingPerInput.current.value, 10) : 10;
+            inputPerNum = pagingPerInput.current ? defParseInt(pagingPerInput.current.value, defPerNum) : defPerNum;
             newPagingCount = pagingCalculate(dataNum, inputPerNum);
             if(inputNum !== ""){
                 inputNum = defParseInt(inputNum, currentNum);

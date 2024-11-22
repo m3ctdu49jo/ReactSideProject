@@ -61,7 +61,6 @@ const ControlBox = styled.div.withConfig({
 
 interface ControlBoxProps {
     gridhover: boolean;
-    children: React.ReactNode;
 }
 
 
