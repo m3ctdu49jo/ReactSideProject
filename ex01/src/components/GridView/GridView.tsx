@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Grid from "./Grid";
 import GridViewProvider, { SortConditionProps } from "./GridViewProvider"
 interface dataItemsProps {
@@ -20,7 +20,7 @@ interface dataProps {
 function GridView(){
     const [pagingNum, setPagingNum] = useState<number>(1);
     const [pagingPerNum, setPagingPerNum] = useState<number>(10);
-    const [dataItems, setDataItems] = useState<dataItemsProps[]>([]);
+    const [dataItems, setDataItems] = useState<dataItemsProps[] | null>([]);
     const [pageData, setPageData] = useState<dataItemsProps[]>([]);
     const [colsSort, setColsSort] = useState<SortConditionProps<dataItemsProps>[]>([]);
     const [columnsName, setColumnsName] = useState<columnsNameProps[]>([]);
@@ -28,20 +28,28 @@ function GridView(){
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
 
+    useEffect(() => {
+        // setDataItems();
+    }, []);
+    
+    function sortChangeHandle(sort: SortConditionProps<dataItemsProps>[]){
+        setColsSort(sort);
+    }
+    function resetDataHandle(reset: boolean){
+        setResetData(reset);
+    }
+
     return (
-        ""
-        // <GridViewProvider<dataItemsProps> 
-        //     dataItems={dataItems} 
-        //     setDataItems={setDataItems} 
-        //     pageItems={pageData} 
-        //     setPageItems={setPageData} 
-        //     colsSort={colsSort} 
-        //     setColsSort={setColsSort} 
-        //     resetData={false} 
-        //     setResetData={setResetData}
-        // >
-        //     <Grid />
-        // </GridViewProvider>
+        <GridViewProvider<dataItemsProps> 
+            dataItems={dataItems} 
+            setDataItems={setDataItems} 
+            colsSort={colsSort} 
+            setColsSort={setColsSort} 
+            resetData={false} 
+            setResetData={setResetData}
+        >
+            <Grid data={dataItems} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} />
+        </GridViewProvider>
     );
 }
 

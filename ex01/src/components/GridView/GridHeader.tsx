@@ -67,9 +67,10 @@ function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
 interface GridHeaderProps<K> {
     columnNameItems: K[];
     colsName: string[];
+    colsVisible: boolean[];
 }
 
-function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName}: GridHeaderProps<K>){
+function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName, colsVisible}: GridHeaderProps<K>){
     const {dataItems, setDataItems, colsSort, setColsSort} = useGridViewContext<T>();
     
     let changeDataSort = async function (colId: keyof T) {
@@ -93,8 +94,10 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
                 asc: true
             });
         }
-        let itemSorted = await mutiSort([...dataItems], newSort);
-        setDataItems(itemSorted);
+        if(dataItems){
+            let itemSorted = await mutiSort([...dataItems], newSort);
+            setDataItems(itemSorted);
+        }
         setColsSort(newSort);
     }
 
@@ -108,6 +111,9 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
                 colsName?.map((colName, index) => {
                     let id: keyof T;
                     let sort = colsSort.find(x => x.key === id);
+
+                    if(!colsVisible[index])
+                        return;
 
                     if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
                         id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;

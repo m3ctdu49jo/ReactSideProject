@@ -21,19 +21,28 @@ interface GridViewWrapProps {
 }
 
 interface GridProps<T, K> {
-    data: T[];
-    columnsName: K[];
+    data: T[] | null;
+    columnsName: K[] | null;
     onSortChange: (sort: SortConditionProps<T>[]) => void;
     onRestSetData: (reset: boolean) => void;
+    onClickItem?: (row: T | undefined) => void;
+}
+
+
+export interface columnsNameProps {
+    colId: string;
+    colName: string;
+    visible?: boolean;
 }
 
 
 // 接收透過元件傳遞進來的參數要使用解構物件方式獲取，否則數據將有可能出錯
-function Grid<T extends Object, K extends {colName: string, colId: string}>({data, columnsName, onSortChange, onRestSetData}: GridProps<T, K>) {
-    const { colsSort, resetData, setResetData}: GridViewProviderProps<T> = useGridViewContext();
+function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, onSortChange, onRestSetData, onClickItem}: GridProps<T, K>) {
+    const { colsSort, resetData, setResetData, clickItem, setAllowClcikItem}: GridViewProviderProps<T> = useGridViewContext();
     const [columnNameItems, setColumnNameItem] = useState<K[]>([]);
     const [colsName, setColsName] = useState<string[]>([]);
     const [colsId, setColsId] = useState<Array<keyof T>>([]);
+    const [colsVisible, setColsVisible] = useState<boolean[]>([]);
     const [gridHover, setGridHover] = useState<boolean>(false);
     const [timeoutHover, setTimeoutHover] = useState<boolean>(false);
 
@@ -42,16 +51,19 @@ function Grid<T extends Object, K extends {colName: string, colId: string}>({dat
         let c = columnsName && columnsName[0] ? [...columnsName] : [];
         setColumnNameItem(c);
 
-        let names: string[], ids: Array<keyof T>;
+        let names: string[], ids: Array<keyof T>, visibles: boolean[];
         if (!c[0]) {
             names = d.map(i => Object.keys(i))[0];
             ids = d.map(i => Object.keys(i))[0] as Array<keyof T>;
+            visibles = d.map(i => true);
         } else {
             names = c.map(i => i.colName);
             ids = c.map(i => i.colId) as Array<keyof T>;
+            visibles = c.map(i => i.visible || i.visible === undefined ? true : false);
         }
         setColsName(names);
         setColsId(ids);
+        setColsVisible(visibles);
         setResetData(false);
 
     }, [data, columnsName]);
@@ -64,6 +76,13 @@ function Grid<T extends Object, K extends {colName: string, colId: string}>({dat
     useEffect(() => {
         onRestSetData(resetData);
     }, [resetData]);
+
+    useEffect(() => {
+        if(setAllowClcikItem)
+            setAllowClcikItem(onClickItem !== undefined);
+        if(onClickItem)
+            onClickItem(clickItem);
+    }, [clickItem]);
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
     useDebounce(() => {
@@ -83,8 +102,8 @@ function Grid<T extends Object, K extends {colName: string, colId: string}>({dat
         <GridViewBox onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
             <ControlBar gridHover={gridHover} />
             <GridViewWrap $colsNum={colsName ? colsName.length : 1}>
-                <GridHeader columnNameItems={columnNameItems} colsName={colsName} />
-                <GridBody colsId={colsId} colsName={colsName} dataItems={data} />
+                <GridHeader columnNameItems={columnNameItems} colsName={colsName} colsVisible={colsVisible} />
+                <GridBody colsId={colsId} colsName={colsName} dataItems={data} colsVisible={colsVisible} />
             </GridViewWrap>
         </GridViewBox>
     );

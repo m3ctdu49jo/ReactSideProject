@@ -17,22 +17,26 @@ export interface SortConditionProps<T> {
 }
 
 export interface GridViewProviderProps<T> {
-    dataItems: T[];
-    setDataItems: React.Dispatch<React.SetStateAction<T[]>>;
-    pageItems: T[];
-    setPageItems: React.Dispatch<React.SetStateAction<T[]>>;
+    dataItems: T[] | null;
+    setDataItems: React.Dispatch<React.SetStateAction<T[] | null>>;
     colsSort: SortConditionProps<T>[];
     setColsSort: React.Dispatch<React.SetStateAction<SortConditionProps<T>[]>>
     resetData: boolean;
     setResetData: React.Dispatch<React.SetStateAction<boolean>>;
+    clickItem?: T | undefined,
+    setClickItem?: React.Dispatch<React.SetStateAction<T | undefined>>,
+    allowClcikItem?: boolean,
+    setAllowClcikItem?: React.Dispatch<boolean>,
     children: ReactNode;
 }
 
 function GridViewProvider<T>({children}: GridViewProviderProps<T>) {
-    const [dataItems, setDataItems] = useState<T[]>([]);
+    const [dataItems, setDataItems] = useState<T[] | null>(null);
     const [pageItems, setPageItems] = useState<T[]>([]);
     const [colsSort, setColsSort] = useState<SortConditionProps<T>[]>([]);
     const [resetData, setResetData] = useState<boolean>(false);
+    const [clickItem, setClickItem] = useState<T | undefined>(undefined);
+    const [allowClcikItem, setAllowClcikItem] = useState<boolean>(false);
 
     const contextValue = {
         dataItems, 
@@ -43,6 +47,10 @@ function GridViewProvider<T>({children}: GridViewProviderProps<T>) {
         setColsSort, 
         resetData, 
         setResetData, 
+        clickItem,
+        setClickItem,
+        allowClcikItem,
+        setAllowClcikItem,
         children
     }
 
