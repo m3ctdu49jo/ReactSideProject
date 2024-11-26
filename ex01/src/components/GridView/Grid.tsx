@@ -101,7 +101,7 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, 
     return (
         <GridViewBox onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
             <ControlBar gridHover={gridHover} />
-            <GridViewWrap $colsNum={colsName ? colsName.length : 1}>
+            <GridViewWrap $colsNum={colsVisible ? colsVisible.filter(x => x !== false).length : 1}>
                 <GridHeader columnNameItems={columnNameItems} colsName={colsName} colsVisible={colsVisible} />
                 <GridBody colsId={colsId} colsName={colsName} dataItems={data} colsVisible={colsVisible} />
             </GridViewWrap>

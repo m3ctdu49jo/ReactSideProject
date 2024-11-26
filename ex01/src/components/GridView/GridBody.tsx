@@ -50,12 +50,10 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                 <div><ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsName.length : 1}>沒有資料</ColumnNone></div>
                 :
                 dataItems.map((item, index) => {
-                    
-                    if(!colsVisible[index])
-                    return;
-
                     let r: string = index.toString() + colsId.map(c => item[c]);
                     return colsId?.map((colId, colIndex) => {
+                        if(!colsVisible[colIndex])
+                            return;
                         let i = item[colId] as string;
                         let k: string = i + colIndex;
                         return <Column className={style.gridViewColumn} key={k} $colsNum={colsName.length} $active={rowActive === r} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
