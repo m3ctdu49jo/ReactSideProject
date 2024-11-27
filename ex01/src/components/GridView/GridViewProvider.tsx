@@ -1,14 +1,15 @@
-import React, {useState, createContext, useContext, useCallback, ReactNode} from "react";
-
+import React, {useState, createContext, useContext, useCallback, ReactNode, useReducer} from "react";
+import { gridReducer, gridState } from "./reducers/gridReducer";
+import { GridActions, initialState } from "./actions/GridActions";
 
 const GridViewContext = createContext<GridViewProviderProps<any> | null>(null);
-function useGridViewContext<T>() { 
+function useGridViewContext<T>(): GridViewProviderProps<T> { 
     const context = useContext(GridViewContext);
 
     if(!context)
         throw new Error("useGridViewContext must be used within a GridViewProvider");
 
-    return context as GridViewProviderProps<T>
+    return context;
 
 }
 export interface SortConditionProps<T> {
@@ -23,36 +24,33 @@ export interface GridViewProviderProps<T> {
     setColsSort: React.Dispatch<React.SetStateAction<SortConditionProps<T>[]>>
     resetData: boolean;
     setResetData: React.Dispatch<React.SetStateAction<boolean>>;
-    clickItem?: T | undefined,
-    setClickItem?: React.Dispatch<React.SetStateAction<T | undefined>>,
-    allowClcikItem?: boolean,
-    setAllowClcikItem?: React.Dispatch<boolean>,
+    clickItem?: T | undefined;
+    setClickItem?: React.Dispatch<React.SetStateAction<T | undefined>>;
+    allowClcikItem?: boolean;
+    setAllowClcikItem?: React.Dispatch<boolean>;
+    state: gridState<T>;
+    dispatch: React.Dispatch<GridActions<T>>;
     children: ReactNode;
+
 }
 
-function GridViewProvider<T>({children}: GridViewProviderProps<T>) {
-    const [dataItems, setDataItems] = useState<T[] | null>(null);
+function GridViewProvider<T>({children, ...props}: GridViewProviderProps<T>) {
+    // 由 <元件狀態傳進來就不需要再設定State>
+    //const [dataItems, setDataItems] = useState<T[] | null>(null);
     const [pageItems, setPageItems] = useState<T[]>([]);
-    const [colsSort, setColsSort] = useState<SortConditionProps<T>[]>([]);
-    const [resetData, setResetData] = useState<boolean>(false);
-    const [clickItem, setClickItem] = useState<T | undefined>(undefined);
-    const [allowClcikItem, setAllowClcikItem] = useState<boolean>(false);
+    //const [colsSort, setColsSort] = useState<SortConditionProps<T>[]>([]);
+    //const [resetData, setResetData] = useState<boolean>(false);
+    //const [clickItem, setClickItem] = useState<T | undefined>(undefined);
+    //const [allowClcikItem, setAllowClcikItem] = useState<boolean>(false);
 
+    // const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
     const contextValue = {
-        dataItems, 
-        setDataItems, 
         pageItems, 
         setPageItems, 
-        colsSort, 
-        setColsSort, 
-        resetData, 
-        setResetData, 
-        clickItem,
-        setClickItem,
-        allowClcikItem,
-        setAllowClcikItem,
+        ...props,
         children
     }
+
 
     return (
         <GridViewContext.Provider value={contextValue}>

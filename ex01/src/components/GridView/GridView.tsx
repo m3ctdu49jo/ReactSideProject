@@ -40,16 +40,17 @@ function GridView(){
     }
 
     return (
-        <GridViewProvider<dataItemsProps> 
-            dataItems={dataItems} 
-            setDataItems={setDataItems} 
-            colsSort={colsSort} 
-            setColsSort={setColsSort} 
-            resetData={false} 
-            setResetData={setResetData}
-        >
-            <Grid data={dataItems} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} />
-        </GridViewProvider>
+        ""
+        // <GridViewProvider<dataItemsProps> 
+        //     dataItems={dataItems} 
+        //     setDataItems={setDataItems} 
+        //     colsSort={colsSort} 
+        //     setColsSort={setColsSort} 
+        //     resetData={false} 
+        //     setResetData={setResetData}
+        // >
+        //     <Grid data={dataItems} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} />
+        // </GridViewProvider>
     );
 }
 

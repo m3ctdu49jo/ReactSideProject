@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import Grid, { columnsNameProps } from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider, { GridViewProviderProps, SortConditionProps } from "./GridViewProvider";
+import { gridReducer } from "./reducers/gridReducer";
+import { initialState } from "./actions/GridActions";
 
 
 function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
@@ -41,6 +43,8 @@ function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPaging
     const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
     const [clickItem, setClickItem] = useState<T | undefined>(undefined);
     const [allowClick, setAllowClick] = useState<boolean>(false);
+    
+    
 
     useEffect(() => {     
         setDataItems(dataItemList);
@@ -88,7 +92,8 @@ function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPaging
     function onClickItem(item: T | undefined){
         setClickItem(item);
     }
-
+    const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
+    
     return (
         <GridViewProvider<T> 
             dataItems={dataItems} 
@@ -101,6 +106,8 @@ function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPaging
             setClickItem={setClickItem}
             allowClcikItem={allowClick}
             setAllowClcikItem={setAllowClick}
+            state={state}
+            dispatch={dispatch}
         >
             <Grid data={pageData} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} onClickItem={onClickItem} />
             <Paging dataNum={dataItems ? dataItems.length : 0} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />

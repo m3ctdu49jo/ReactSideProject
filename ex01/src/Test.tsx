@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Provider } from "react-redux"
-import store from "./store/store";
 import FlashBox from "./components/FlashBox";
 import QuestionBox from "./components/QuestionBox";
 import ArticleBox from "./components/ArticleBox";
@@ -72,16 +70,15 @@ useEffect(() => {
 
     return (
         <>
-            <Provider store={store}>
-                {/* <FlashBox /> */}
-                {/* <QuestionBox /> */}
-                {/* <ArticleBox /> */}
-                {/* <NewsLoop /> */}
-                {/* <NewsLoopBox /> */}
-                {/* <GridView /> */}
-                {isLoading ? "loading..." :
-                <GridPaging<dataItemsProps> dataItemList={data} columnNameList={colNameList} />}
-            </Provider>
+            {/* <FlashBox /> */}
+            {/* <QuestionBox /> */}
+            {/* <ArticleBox /> */}
+            {/* <NewsLoop /> */}
+            {/* <NewsLoopBox /> */}
+            {/* <GridView /> */}
+            {isLoading ? "loading..." :
+            <GridPaging<dataItemsProps> dataItemList={data} columnNameList={colNameList} />}
+            
         </>
     );
 }

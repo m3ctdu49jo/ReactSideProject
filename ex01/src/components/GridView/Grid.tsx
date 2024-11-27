@@ -5,6 +5,7 @@ import ControlBar from "./ControlBar";
 import GridHeader from "./GridHeader";
 import GridBody, { GridBodyProps } from "./GridBody";
 import { useGridViewContext, GridViewProviderProps, SortConditionProps } from "./GridViewProvider";
+import { setDataItemR } from "./actions/GridActions";
 
 const GridViewBox = styled.div`
     width: 80%;
@@ -38,7 +39,7 @@ export interface columnsNameProps {
 
 // 接收透過元件傳遞進來的參數要使用解構物件方式獲取，否則數據將有可能出錯
 function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, onSortChange, onRestSetData, onClickItem}: GridProps<T, K>) {
-    const { colsSort, resetData, setResetData, clickItem, setAllowClcikItem}: GridViewProviderProps<T> = useGridViewContext();
+    const { colsSort, resetData, setResetData, clickItem, setAllowClcikItem, state, dispatch}: GridViewProviderProps<T> = useGridViewContext();
     const [columnNameItems, setColumnNameItem] = useState<K[]>([]);
     const [colsName, setColsName] = useState<string[]>([]);
     const [colsId, setColsId] = useState<Array<keyof T>>([]);
@@ -65,6 +66,7 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, 
         setColsId(ids);
         setColsVisible(visibles);
         setResetData(false);
+        console.log(state.dataItem);
 
     }, [data, columnsName]);
 
@@ -77,6 +79,9 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, 
             setAllowClcikItem(onClickItem !== undefined);
         if(onClickItem)
             onClickItem(clickItem);
+        // let d = data && data[0] ? [...data] : [];    //useReducer正常
+        // dispatch(setDataItemR<T>(d));
+        // console.log(state.dataItem);
     }, [clickItem]);
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
