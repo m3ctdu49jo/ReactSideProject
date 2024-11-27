@@ -72,6 +72,7 @@ interface GridHeaderProps<K> {
 
 function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName, colsVisible}: GridHeaderProps<K>){
     const {dataItems, setDataItems, colsSort, setColsSort} = useGridViewContext<T>();
+    const colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
     
     let changeDataSort = async function (colId: keyof T) {
         let newSort = [...colsSort];
@@ -106,7 +107,7 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
             {
                 
                 !colsName || colsName.length === 0 ?
-                <ColumnTitleNone  className={style.gridViewColumn} $colsNum={colsName ? colsName.length : 1}>無欄位</ColumnTitleNone> 
+                <ColumnTitleNone  className={style.gridViewColumn} $colsNum={colsName ? colsLen : 1}>無欄位</ColumnTitleNone> 
                 :
                 colsName?.map((colName, index) => {
                     let id: keyof T;

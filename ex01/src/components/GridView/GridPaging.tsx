@@ -49,7 +49,6 @@ function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPaging
         setPagingToFirst(true);
         setPagingNum(1);
     }, [resetData]);
-
     
     useEffect(() => {   
         if(!dataItems || dataItems.length === 0)
@@ -86,6 +85,9 @@ function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPaging
     function resetDataHandle(reset: boolean){
         setResetData(reset);
     }
+    function onClickItem(item: T | undefined){
+        setClickItem(item);
+    }
 
     return (
         <GridViewProvider<T> 
@@ -100,7 +102,7 @@ function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPaging
             allowClcikItem={allowClick}
             setAllowClcikItem={setAllowClick}
         >
-            <Grid data={pageData} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} />
+            <Grid data={pageData} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} onClickItem={onClickItem} />
             <Paging dataNum={dataItems ? dataItems.length : 0} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />
         </GridViewProvider>
     );

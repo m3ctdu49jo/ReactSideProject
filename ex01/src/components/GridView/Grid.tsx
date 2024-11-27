@@ -72,11 +72,6 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, 
         onSortChange(colsSort);
     }, [colsSort]);
 
-    
-    useEffect(() => {
-        onRestSetData(resetData);
-    }, [resetData]);
-
     useEffect(() => {
         if(setAllowClcikItem)
             setAllowClcikItem(onClickItem !== undefined);

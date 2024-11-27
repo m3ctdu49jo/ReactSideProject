@@ -66,10 +66,12 @@ interface ControlBoxProps {
 
 function ControlBar({gridHover}: {gridHover: boolean}){
 
-    const { setColsSort, setResetData } = useGridViewContext();
+    const { setColsSort, setResetData, setClickItem } = useGridViewContext();
     
     function reset(){
         resetSortAndInitData();
+        if(setClickItem)
+            setClickItem(null);
 
     }
     function resetSortAndInitData(){

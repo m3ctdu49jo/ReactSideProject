@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
 import { GridViewProviderProps, useGridViewContext } from "./GridViewProvider";
@@ -33,8 +33,9 @@ export interface GridBodyProps<T> {
 
 function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T>) {
 
-    const {setClickItem} = useGridViewContext<T>();
+    const {setClickItem, clickItem} = useGridViewContext<T>();
     const [rowActive, setRowActive] = useState<string>("");
+    const colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
 
     const itemClickHandle = (row: T, activeId: string) => {
         setRowActive(activeId);
@@ -42,12 +43,18 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
             setClickItem(row);
     }
 
+    useEffect(() => {
+        if(!clickItem)
+            setRowActive("");
+    }, [clickItem]);
+
     return (
         <>
             {
+                
                 !dataItems || dataItems.length === 0
                 ?
-                <div><ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsName.length : 1}>沒有資料</ColumnNone></div>
+                <div><ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsLen : 1}>沒有資料</ColumnNone></div>
                 :
                 dataItems.map((item, index) => {
                     let r: string = index.toString() + colsId.map(c => item[c]);
@@ -56,7 +63,7 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                             return;
                         let i = item[colId] as string;
                         let k: string = i + colIndex;
-                        return <Column className={style.gridViewColumn} key={k} $colsNum={colsName.length} $active={rowActive === r} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
+                        return <Column className={style.gridViewColumn} key={k} $colsNum={colsLen} $active={rowActive === r} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
                     })
                 })
             }
