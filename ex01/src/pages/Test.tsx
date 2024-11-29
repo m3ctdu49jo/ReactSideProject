@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import FlashBox from "./components/FlashBox";
-import QuestionBox from "./components/QuestionBox";
-import ArticleBox from "./components/ArticleBox";
-import NewsLoop from "./components/NewsLoop";
-import NewsLoopBox from "./components/NewsLoopBox";
-import { GridView, GridPaging } from "./components/GridView";
-import Paging from "./components/Paging";
-import { columnsNameProps } from "./components/GridView/Grid";
+import FlashBox from "../components/FlashBox";
+import QuestionBox from "../components/QuestionBox";
+import ArticleBox from "../components/ArticleBox";
+import NewsLoop from "../components/NewsLoop";
+import NewsLoopBox from "../components/NewsLoopBox";
+import { GridView, GridPaging } from "../components/GridView";
+import Paging from "../components/Paging";
+import { columnsNameProps } from "../components/GridView/Grid";
 
 interface dataItemsProps {
     id: number;

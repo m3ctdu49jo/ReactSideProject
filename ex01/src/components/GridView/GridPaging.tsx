@@ -29,10 +29,11 @@ interface GridPagingProps<T> {
     dataItemList: T[] | null;
     columnNameList: columnsNameProps[] | null;
     allowClickItem?: boolean;
+    onClickItem?: (item: T | undefined) => void;
 }
 
 
-function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickItem = false}: GridPagingProps<T>) {
+function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickItem = false, onClickItem}: GridPagingProps<T>) {
     const [pagingNum, setPagingNum] = useState<number>(1);
     const [pagingPerNum, setPagingPerNum] = useState<number>(10);
     const [pageData, setPageData] = useState<T[]>([]);
@@ -75,6 +76,11 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
         let itemSorted: T[] = mutiSort<T>([...state.dataItems], state.colsSort);
         dispatch(setDataItemR(itemSorted));
     }, [state.colsSort]);
+
+    useEffect(() => {
+        if(onClickItem && allowClickItem)
+            onClickItem(state.clickItem);
+    }, [state.clickItem]);
 
     function pagingChangeHandle(num: number, perNum: number){
         setPagingNum(num);

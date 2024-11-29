@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux"
 import store from "./store/store";
-import Test from "./Test";
+import Test from "./pages/Test";
 
 
 //components 以大寫開頭
