@@ -2,18 +2,6 @@ import React from "react";
 import { SortConditionProps } from "../GridViewProvider";
 import { gridState } from "../reducers/gridReducer";
 
-// export interface ActionResult {
-//     type: string;
-//     payload: any;
-// }
-
-// export function setDataItem<T>(dataItem: T): ActionResult {
-//     return {
-//         type: "SET_DATA_ITEM",
-//         payload: dataItem
-//     }
-// }
-
 // 制定Action動作介面
 export interface SetDataItemAction<T> {
     type: "SET_DATA_ITEM";

@@ -65,24 +65,9 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}:
         setColsName(names);
         setColsId(ids);
         setColsVisible(visibles);
-        //setResetData(false);
         dispatch(setResetDataR(false));
 
     }, [data, columnsName]);
-
-    // useEffect(() => {
-    //     onSortChange(colsSort);
-    // }, [colsSort]);
-
-    useEffect(() => {
-        // if(setAllowClcikItem)
-        //     setAllowClcikItem(onClickItem !== undefined);
-        // if(onClickItem)
-        //     onClickItem(clickItem);
-        // let d = data && data[0] ? [...data] : [];    //useReducer正常
-        // dispatch(setDataItemR<T>(d));
-        // console.log(state.dataItem);
-    }, [state.clickItem]);
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
     useDebounce(() => {

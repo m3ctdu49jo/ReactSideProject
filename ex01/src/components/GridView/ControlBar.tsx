@@ -71,20 +71,16 @@ function ControlBar({gridHover}: {gridHover: boolean}){
     
     function reset(){
         resetSortAndInitData();
-        // if(setClickItem)
-        //     setClickItem(null);
         dispatch(clearClickItemR());
 
 
     }
     function resetSortAndInitData(){
-        //setColsSort([]);
         dispatch(clearColsSortR());
         resetInitData();
     }
 
     function resetInitData(){
-        //setResetData(true);
         dispatch(setResetDataR(true));
     }
     return (

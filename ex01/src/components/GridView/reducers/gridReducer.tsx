@@ -1,5 +1,5 @@
 import React from "react";
-import { SetDataItemAction, GridActions } from "../actions/GridActions";
+import { GridActions } from "../actions/GridActions";
 import { SortConditionProps } from "../GridViewProvider";
 
 
@@ -26,7 +26,6 @@ export function gridReducer<T>(state: gridState<T>, action: GridActions<T>){
                 colsSort: []
             }   
         case "SET_COLS_SORT":
-            //console.log("a", [...action.payload]);
             return {
                 ...state,
                 colsSort: [...action.payload]

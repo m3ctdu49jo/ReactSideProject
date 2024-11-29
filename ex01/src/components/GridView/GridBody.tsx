@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
-import { GridViewProviderProps, useGridViewContext } from "./GridViewProvider";
+import { useGridViewContext } from "./GridViewProvider";
 import { setClickItemR } from "./actions/GridActions";
 
 
@@ -40,8 +40,6 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
 
     const itemClickHandle = (row: T, activeId: string) => {
         setRowActive(activeId);
-        // if(setClickItem)
-        //     setClickItem(row);
         dispatch(setClickItemR(row))
     }
 

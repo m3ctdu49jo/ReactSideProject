@@ -35,15 +35,10 @@ interface GridPagingProps<T> {
 function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickItem = false}: GridPagingProps<T>) {
     const [pagingNum, setPagingNum] = useState<number>(1);
     const [pagingPerNum, setPagingPerNum] = useState<number>(10);
-    //const [dataItems, setDataItems] = useState<T[] | null>([]);
     const [pageData, setPageData] = useState<T[]>([]);
-    //const [colsSort, setColsSort] = useState<SortConditionProps<T>[]>([]);
     const [columnsName, setColumnsName] = useState<columnsNameProps[] | null>([]);
-    //const [resetData, setResetData] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
-    //const [clickItem, setClickItem] = useState<T | undefined>(undefined);
-    //const [allowClick, setAllowClick] = useState<boolean>(false);
     const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
     
     
@@ -85,15 +80,6 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
         setPagingNum(num);
         setPagingPerNum(perNum);
     }
-    // function sortChangeHandle(sort: SortConditionProps<T>[]){
-    //     setColsSort(sort);
-    // }
-    // function resetDataHandle(reset: boolean){
-    //     setResetData(reset);
-    // }
-    // function onClickItem(item: T | undefined){
-    //     setClickItem(item);
-    // }
     
     return (
         <GridViewProvider<T> 
