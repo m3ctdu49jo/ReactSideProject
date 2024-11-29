@@ -77,7 +77,7 @@ useEffect(() => {
             {/* <NewsLoopBox /> */}
             {/* <GridView /> */}
             {isLoading ? "loading..." :
-            <GridPaging<dataItemsProps> dataItemList={data} columnNameList={colNameList} />}
+            <GridPaging<dataItemsProps> dataItemList={data} columnNameList={colNameList} allowClickItem={true} />}
             
         </>
     );

@@ -2,6 +2,7 @@ import React from "react";
 import style from "../../styles/style.module.css";
 import styled from "styled-components";
 import { useGridViewContext, SortConditionProps } from "./GridViewProvider";
+import { setColsSortR } from "./actions/GridActions";
 
 const ColumnTitle = styled.div`
     background: #d7f3ff;
@@ -71,12 +72,12 @@ interface GridHeaderProps<K> {
 }
 
 function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName, colsVisible}: GridHeaderProps<K>){
-    const {dataItems, setDataItems, colsSort, setColsSort} = useGridViewContext<T>();
+    const {dispatch, state} = useGridViewContext<T>();
     const colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
     
     let changeDataSort = async function (colId: keyof T) {
-        let newSort = [...colsSort];
-        let index = colsSort.findIndex(x => x.key === colId);
+        let newSort = [...state.colsSort];
+        let index = state.colsSort.findIndex(x => x.key === colId);
 
         // 單個排序
         // let itemSorted = [...dataItems].sort((a, b) => {
@@ -87,7 +88,7 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
         // });
 
         if (index >= 0) {
-            newSort[index].asc = !colsSort[index].asc;
+            newSort[index].asc = !state.colsSort[index].asc;
         }
         else {
             newSort.push({
@@ -95,11 +96,12 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
                 asc: true
             });
         }
-        if(dataItems){
-            let itemSorted = await mutiSort([...dataItems], newSort);
-            setDataItems(itemSorted);
-        }
-        setColsSort(newSort);
+        // if(dataItems){
+        //     let itemSorted = await mutiSort([...dataItems], newSort);
+        //     setDataItems(itemSorted);
+        // }
+        //setColsSort(newSort);
+        dispatch(setColsSortR(newSort))
     }
 
     return (
@@ -110,14 +112,14 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
                 <ColumnTitleNone  className={style.gridViewColumn} $colsNum={colsName ? colsLen : 1}>無欄位</ColumnTitleNone> 
                 :
                 colsName?.map((colName, index) => {
-                    let id: keyof T;
-                    let sort = colsSort.find(x => x.key === id);
+                    let id: keyof T, sort;
 
                     if(!colsVisible[index])
                         return;
 
                     if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
                         id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;
+                    sort = state.colsSort.find(x => x.key === id);
 
                     return (
                         <ColumnTitle key={colName + index} className={style.gridViewColumn}>

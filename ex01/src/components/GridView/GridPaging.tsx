@@ -3,7 +3,7 @@ import Grid, { columnsNameProps } from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider, { GridViewProviderProps, SortConditionProps } from "./GridViewProvider";
 import { gridReducer } from "./reducers/gridReducer";
-import { initialState } from "./actions/GridActions";
+import { initialState, setAllowClickItemR, setClickItemR, setColsSortR, setDataItemR, setResetDataR } from "./actions/GridActions";
 
 
 function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
@@ -28,89 +28,80 @@ function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
 interface GridPagingProps<T> {
     dataItemList: T[] | null;
     columnNameList: columnsNameProps[] | null;
+    allowClickItem?: boolean;
 }
 
 
-function GridPaging<T extends Object>({dataItemList, columnNameList}: GridPagingProps<T>) {
+function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickItem = false}: GridPagingProps<T>) {
     const [pagingNum, setPagingNum] = useState<number>(1);
     const [pagingPerNum, setPagingPerNum] = useState<number>(10);
-    const [dataItems, setDataItems] = useState<T[] | null>([]);
+    //const [dataItems, setDataItems] = useState<T[] | null>([]);
     const [pageData, setPageData] = useState<T[]>([]);
-    const [colsSort, setColsSort] = useState<SortConditionProps<T>[]>([]);
+    //const [colsSort, setColsSort] = useState<SortConditionProps<T>[]>([]);
     const [columnsName, setColumnsName] = useState<columnsNameProps[] | null>([]);
-    const [resetData, setResetData] = useState<boolean>(false);
+    //const [resetData, setResetData] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
-    const [clickItem, setClickItem] = useState<T | undefined>(undefined);
-    const [allowClick, setAllowClick] = useState<boolean>(false);
+    //const [clickItem, setClickItem] = useState<T | undefined>(undefined);
+    //const [allowClick, setAllowClick] = useState<boolean>(false);
+    const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
     
     
 
     useEffect(() => {     
-        setDataItems(dataItemList);
+        dispatch(setDataItemR(dataItemList));
         setColumnsName(columnNameList);
-        setIsLoading(false);
         setPagingToFirst(true);
         setPagingNum(1);
-    }, [resetData]);
+        dispatch(setAllowClickItemR(allowClickItem));
+    }, [state.resetData]);
     
     useEffect(() => {   
-        if(!dataItems || dataItems.length === 0)
+        if(!state.dataItems || state.dataItems.length === 0)
             return;
 
         const firstIndex = ((pagingNum - 1) * pagingPerNum);
         const LastIndex = (firstIndex + pagingPerNum) - 1;
              
-        const filterD: T[] = dataItems.filter((_, index) => {
+        const filterD: T[] = state.dataItems.filter((_, index) => {
             return index >= firstIndex && index <= LastIndex;
         });
         setPageData(filterD);
         setPagingToFirst(false);
-    }, [pagingNum, pagingPerNum, dataItems]);
+    }, [pagingNum, pagingPerNum, state.dataItems]);
     
     useEffect(() => {   
-        if(!dataItems || dataItems.length === 0 || resetData)
+        if(!state.dataItems || state.dataItems.length === 0 || state.resetData)
             return;
-        if(colsSort.length === 0){
+        if(state.colsSort.length === 0){
             setPagingToFirst(true);
             setPagingNum(1);
         }
-        let itemSorted = mutiSort([...dataItems], colsSort);
-        setDataItems(itemSorted);
-    }, [colsSort]);
+        let itemSorted: T[] = mutiSort<T>([...state.dataItems], state.colsSort);
+        dispatch(setDataItemR(itemSorted));
+    }, [state.colsSort]);
 
     function pagingChangeHandle(num: number, perNum: number){
         setPagingNum(num);
         setPagingPerNum(perNum);
     }
-    function sortChangeHandle(sort: SortConditionProps<T>[]){
-        setColsSort(sort);
-    }
-    function resetDataHandle(reset: boolean){
-        setResetData(reset);
-    }
-    function onClickItem(item: T | undefined){
-        setClickItem(item);
-    }
-    const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
+    // function sortChangeHandle(sort: SortConditionProps<T>[]){
+    //     setColsSort(sort);
+    // }
+    // function resetDataHandle(reset: boolean){
+    //     setResetData(reset);
+    // }
+    // function onClickItem(item: T | undefined){
+    //     setClickItem(item);
+    // }
     
     return (
         <GridViewProvider<T> 
-            dataItems={dataItems} 
-            setDataItems={setDataItems} 
-            colsSort={colsSort} 
-            setColsSort={setColsSort} 
-            resetData={false} 
-            setResetData={setResetData}
-            clickItem={clickItem}
-            setClickItem={setClickItem}
-            allowClcikItem={allowClick}
-            setAllowClcikItem={setAllowClick}
             state={state}
             dispatch={dispatch}
         >
-            <Grid data={pageData} columnsName={columnsName} onSortChange={sortChangeHandle} onRestSetData={resetDataHandle} onClickItem={onClickItem} />
-            <Paging dataNum={dataItems ? dataItems.length : 0} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />
+            <Grid data={pageData} columnsName={columnsName} />
+            <Paging dataNum={dataItemList ? dataItemList.length : 0} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />
         </GridViewProvider>
     );
 }

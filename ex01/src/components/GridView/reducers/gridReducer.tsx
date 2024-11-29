@@ -5,10 +5,10 @@ import { SortConditionProps } from "../GridViewProvider";
 
 
 export interface gridState<T> {
-    dataItem: T[];
+    dataItems: T[] | null;
     colsSort: SortConditionProps<T>[];
     resetData: boolean;
-    clickItem: T;
+    clickItem: T | undefined;
     allowClcikItem: boolean;
 }
 
@@ -18,13 +18,24 @@ export function gridReducer<T>(state: gridState<T>, action: GridActions<T>){
         case "SET_DATA_ITEM":
             return {
                 ...state,
-                dataItem: [...action.payload]
-            };        
+                dataItems: action.payload ? [...action.payload] : null
+            };     
+        case "CLEAR_DATA_ITEM":
+            return {
+                ...state,
+                colsSort: []
+            }   
         case "SET_COLS_SORT":
+            //console.log("a", [...action.payload]);
             return {
                 ...state,
                 colsSort: [...action.payload]
             };   
+        case "CLEAR_COLS_SORT":
+            return {
+                ...state,
+                colsSort: []
+            }
         case "SET_RESET_DATA":
             return {
                 ...state,
@@ -34,6 +45,11 @@ export function gridReducer<T>(state: gridState<T>, action: GridActions<T>){
             return {
                 ...state,
                 clickItem: action.payload
+            };   
+        case "CLEAR_CLICK_ITEM":
+            return {
+                ...state,
+                clickItem: undefined
             };   
         case "SET_ALLOW_CLICK_ITEM":
             return {

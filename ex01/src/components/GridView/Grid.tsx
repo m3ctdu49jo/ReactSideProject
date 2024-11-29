@@ -5,7 +5,7 @@ import ControlBar from "./ControlBar";
 import GridHeader from "./GridHeader";
 import GridBody, { GridBodyProps } from "./GridBody";
 import { useGridViewContext, GridViewProviderProps, SortConditionProps } from "./GridViewProvider";
-import { setDataItemR } from "./actions/GridActions";
+import { setAllowClickItemR, setClickItemR, setColsSortR, setDataItemR, setResetDataR } from "./actions/GridActions";
 
 const GridViewBox = styled.div`
     width: 80%;
@@ -24,9 +24,9 @@ interface GridViewWrapProps {
 interface GridProps<T, K> {
     data: T[] | null;
     columnsName: K[] | null;
-    onSortChange: (sort: SortConditionProps<T>[]) => void;
-    onRestSetData: (reset: boolean) => void;
-    onClickItem?: (row: T | undefined) => void;
+    // onSortChange: (sort: SortConditionProps<T>[]) => void;
+    // onRestSetData: (reset: boolean) => void;
+    // onClickItem?: (row: T | undefined) => void;
 }
 
 
@@ -38,8 +38,8 @@ export interface columnsNameProps {
 
 
 // 接收透過元件傳遞進來的參數要使用解構物件方式獲取，否則數據將有可能出錯
-function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, onSortChange, onRestSetData, onClickItem}: GridProps<T, K>) {
-    const { colsSort, resetData, setResetData, clickItem, setAllowClcikItem, state, dispatch}: GridViewProviderProps<T> = useGridViewContext();
+function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}: GridProps<T, K>) {
+    const { state, dispatch}: GridViewProviderProps<T> = useGridViewContext();
     const [columnNameItems, setColumnNameItem] = useState<K[]>([]);
     const [colsName, setColsName] = useState<string[]>([]);
     const [colsId, setColsId] = useState<Array<keyof T>>([]);
@@ -65,24 +65,24 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, 
         setColsName(names);
         setColsId(ids);
         setColsVisible(visibles);
-        setResetData(false);
-        console.log(state.dataItem);
+        //setResetData(false);
+        dispatch(setResetDataR(false));
 
     }, [data, columnsName]);
 
-    useEffect(() => {
-        onSortChange(colsSort);
-    }, [colsSort]);
+    // useEffect(() => {
+    //     onSortChange(colsSort);
+    // }, [colsSort]);
 
     useEffect(() => {
-        if(setAllowClcikItem)
-            setAllowClcikItem(onClickItem !== undefined);
-        if(onClickItem)
-            onClickItem(clickItem);
+        // if(setAllowClcikItem)
+        //     setAllowClcikItem(onClickItem !== undefined);
+        // if(onClickItem)
+        //     onClickItem(clickItem);
         // let d = data && data[0] ? [...data] : [];    //useReducer正常
         // dispatch(setDataItemR<T>(d));
         // console.log(state.dataItem);
-    }, [clickItem]);
+    }, [state.clickItem]);
 
     // debounce 延遲觸發函式執行，以免反覆觸發造成state異常設定，而導致顯示異常
     useDebounce(() => {

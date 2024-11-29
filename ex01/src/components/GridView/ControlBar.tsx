@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useGridViewContext } from "./GridViewProvider";
+import { clearClickItemR, clearColsSortR, setResetDataR } from "./actions/GridActions";
 
 const ControlBox = styled.div.withConfig({
         shouldForwardProp: (prop) => prop !== "gridhover"   // boolean 參數，過濾不應傳遞到 DOM 的屬性
@@ -66,21 +67,25 @@ interface ControlBoxProps {
 
 function ControlBar({gridHover}: {gridHover: boolean}){
 
-    const { setColsSort, setResetData, setClickItem } = useGridViewContext();
+    const { dispatch } = useGridViewContext();
     
     function reset(){
         resetSortAndInitData();
-        if(setClickItem)
-            setClickItem(null);
+        // if(setClickItem)
+        //     setClickItem(null);
+        dispatch(clearClickItemR());
+
 
     }
     function resetSortAndInitData(){
-        setColsSort([]);
+        //setColsSort([]);
+        dispatch(clearColsSortR());
         resetInitData();
     }
 
     function resetInitData(){
-        setResetData(true);
+        //setResetData(true);
+        dispatch(setResetDataR(true));
     }
     return (
         <ControlBox gridhover={gridHover}>

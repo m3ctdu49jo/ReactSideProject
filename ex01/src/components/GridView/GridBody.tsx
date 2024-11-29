@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
 import { GridViewProviderProps, useGridViewContext } from "./GridViewProvider";
+import { setClickItemR } from "./actions/GridActions";
 
 
 const Column = styled.div<ColumnProps>`
@@ -33,20 +34,21 @@ export interface GridBodyProps<T> {
 
 function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T>) {
 
-    const {setClickItem, clickItem} = useGridViewContext<T>();
     const [rowActive, setRowActive] = useState<string>("");
     const colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
+    const {state, dispatch} = useGridViewContext<T>();
 
     const itemClickHandle = (row: T, activeId: string) => {
         setRowActive(activeId);
-        if(setClickItem)
-            setClickItem(row);
+        // if(setClickItem)
+        //     setClickItem(row);
+        dispatch(setClickItemR(row))
     }
 
     useEffect(() => {
-        if(!clickItem)
+        if(!state.clickItem)
             setRowActive("");
-    }, [clickItem]);
+    }, [state.clickItem]);
 
     return (
         <>
@@ -63,7 +65,7 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                             return;
                         let i = item[colId] as string;
                         let k: string = i + colIndex;
-                        return <Column className={style.gridViewColumn} key={k} $colsNum={colsLen} $active={rowActive === r} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
+                        return <Column className={style.gridViewColumn} key={k} $colsNum={colsLen} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
                     })
                 })
             }

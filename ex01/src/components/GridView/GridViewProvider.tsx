@@ -18,16 +18,17 @@ export interface SortConditionProps<T> {
 }
 
 export interface GridViewProviderProps<T> {
-    dataItems: T[] | null;
-    setDataItems: React.Dispatch<React.SetStateAction<T[] | null>>;
-    colsSort: SortConditionProps<T>[];
-    setColsSort: React.Dispatch<React.SetStateAction<SortConditionProps<T>[]>>
-    resetData: boolean;
-    setResetData: React.Dispatch<React.SetStateAction<boolean>>;
-    clickItem?: T | undefined;
-    setClickItem?: React.Dispatch<React.SetStateAction<T | undefined>>;
-    allowClcikItem?: boolean;
-    setAllowClcikItem?: React.Dispatch<boolean>;
+    // 搭配Reducer可以不需要再將state, setState包進useContext
+    // dataItems: T[] | null;
+    // setDataItems: React.Dispatch<React.SetStateAction<T[] | null>>;
+    // colsSort: SortConditionProps<T>[];
+    // setColsSort: React.Dispatch<React.SetStateAction<SortConditionProps<T>[]>>
+    // resetData: boolean;
+    // setResetData: React.Dispatch<React.SetStateAction<boolean>>;
+    // clickItem?: T | undefined;
+    // setClickItem?: React.Dispatch<React.SetStateAction<T | undefined>>;
+    // allowClcikItem?: boolean;
+    // setAllowClcikItem?: React.Dispatch<boolean>;
     state: gridState<T>;
     dispatch: React.Dispatch<GridActions<T>>;
     children: ReactNode;
