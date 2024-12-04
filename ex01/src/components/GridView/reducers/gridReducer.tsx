@@ -16,9 +16,14 @@ export interface gridState<T> {
 export function gridReducer<T>(state: gridState<T>, action: GridActions<T>){
     switch(action.type){    // GridActions 介面中的每一個 Action 都要有對應的 case 
         case "SET_DATA_ITEM":
+            let items: T[] | null = [];
+            if(Array.isArray(action.payload))
+                items = action.payload;
+            else if(action.payload)
+                items[0] = action.payload;
             return {
                 ...state,
-                dataItems: action.payload ? [...action.payload] : null
+                dataItems: action.payload ? [...items] : null
             };     
         case "CLEAR_DATA_ITEM":
             return {

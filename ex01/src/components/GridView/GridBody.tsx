@@ -6,7 +6,7 @@ import { setClickItemR } from "./actions/GridActions";
 
 
 const Column = styled.div<ColumnProps>`
-    background: ${props => props.$active ? "#ffd20b" : ""};
+    background: ${props => props.$active ? "#ffd20b" : "#fff"};
     &:nth-child(${props => props.$colsNum}n+1) {
     border-left-width: 1px;
 }
@@ -57,12 +57,14 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                 <ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsLen : 1}>沒有資料</ColumnNone>
                 :
                 dataItems.map((item, index) => {
-                    let r: string = index.toString() + colsId.map(c => item[c]);
+                    let r: string = index.toString() + colsId?.map(c => item[c]);
                     return colsId?.map((colId, colIndex) => {
                         if(!colsVisible[colIndex])
                             return;
                         let i = item[colId] as string;
-                        let k: string = i + r;
+                        let k: string = i + colId.toString() + r;
+                        if(typeof i === "object")
+                            i = "";
                         return <Column className={style.gridViewColumn} key={k} $colsNum={colsLen} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
                     })
                 })

@@ -27,7 +27,7 @@ interface DetailDataItemsProps {
 }
 
 //components 以大寫開頭
-export default function Test(){
+export default function GridDetailTest(){
 
     const [data, setData] = useState<dataItemsProps[] | null>(null);
     const [colNameList, setColNameList] = useState<columnsNameProps[] | null>(null);

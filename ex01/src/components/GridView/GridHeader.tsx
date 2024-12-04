@@ -79,8 +79,26 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
                 asc: true
             });
         }
-        dispatch(setColsSortR(newSort))
+        dispatch(setColsSortR(newSort));
     }
+
+    let s = colsName?.map((colName, index) => {
+        let id: keyof T, sort;
+
+        if(!colsVisible[index])
+            return;
+
+        if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
+            id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;
+        sort = state.colsSort.find(x => x.key === id);
+
+        return (
+            <ColumnTitle key={colName + index} className={style.gridViewColumn}>
+                {colName}
+                <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
+            </ColumnTitle>
+        )
+    });
 
     return (
         <>

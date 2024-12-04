@@ -27,7 +27,7 @@ function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
     
 interface GridPagingProps<T> {
     dataItemList: T[] | null;
-    columnNameList: columnsNameProps[] | null;
+    columnNameList?: columnsNameProps[] | null;
     allowClickItem?: boolean;
     onClickItem?: (item: T | undefined) => void;
 }
@@ -46,7 +46,8 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
 
     useEffect(() => {     
         dispatch(setDataItemR(dataItemList));
-        setColumnsName(columnNameList);
+        if(columnNameList)
+            setColumnsName(columnNameList);
         setPagingToFirst(true);
         setPagingNum(1);
         dispatch(setAllowClickItemR(allowClickItem));

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useDebounce from "../../hooks/useDebounce";
 import ControlBar from "./ControlBar";
@@ -46,22 +46,26 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}:
     const [colsVisible, setColsVisible] = useState<boolean[]>([]);
     const [gridHover, setGridHover] = useState<boolean>(false);
     const [timeoutHover, setTimeoutHover] = useState<boolean>(false);
+    const columnNameItemsRef = useRef();
 
     useEffect(() => {
         let d = data && data[0] ? [...data] : [];
         let c = columnsName && columnsName[0] ? [...columnsName] : [];
-        setColumnNameItem(c);
-
         let names: string[], ids: Array<keyof T>, visibles: boolean[];
         if (!c[0]) {
             names = d.map(i => Object.keys(i))[0];
             ids = d.map(i => Object.keys(i))[0] as Array<keyof T>;
-            visibles = d.map(i => true);
+            visibles = names?.map(i => true);
+            c = ids?.map(id => {
+                let nc: K = {colId: id.toString(), colName: id.toString(), visible: true} as K;
+                return nc;
+            });
         } else {
             names = c.map(i => i.colName);
             ids = c.map(i => i.colId) as Array<keyof T>;
             visibles = c.map(i => i.visible || i.visible === undefined ? true : false);
         }
+        setColumnNameItem(c);
         setColsName(names);
         setColsId(ids);
         setColsVisible(visibles);
