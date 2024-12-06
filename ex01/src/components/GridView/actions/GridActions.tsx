@@ -32,6 +32,18 @@ export interface SetAllowClickItemAction {
     type: "SET_ALLOW_CLICK_ITEM";
     payload: boolean;
 }
+export interface UseQuickSelectBtn {
+    type: "USE_QUICK_SELECT_BTN";
+}
+export interface SetQuickSelectedItem<T> {
+    type: "SET_QUICK_SELECT_ITEM";
+    payload: T
+}
+
+export interface SetColumnNumber {
+    type: "SET_COLUMN_NUMBER"
+    payload: number;
+}
 
 // Grid Actions
 export type GridActions<T> = 
@@ -39,7 +51,9 @@ export type GridActions<T> =
     SetColsSortAction<T> | ClearColsSortAction |
     SetResetDataAction |
     SetClickItemAction<T> | ClearClickItemAction |
-    SetAllowClickItemAction
+    SetAllowClickItemAction |
+    UseQuickSelectBtn | SetQuickSelectedItem<T> |
+    SetColumnNumber
 ;
 
 // 初始值
@@ -49,7 +63,10 @@ export function initialState<T>(): gridState<T>{
         colsSort: [],
         resetData: false,
         clickItem: undefined as T,
-        allowClcikItem: false
+        allowClcikItem: false,
+        showQuickSelectBtn: false,
+        quickSelectedItem: undefined as T,
+        colsNum: 0
     }
 }
 
@@ -81,4 +98,20 @@ export function clearClickItemR(): ClearClickItemAction {
 
 export function setAllowClickItemR(allow: boolean): SetAllowClickItemAction {
     return {type: "SET_ALLOW_CLICK_ITEM", payload: allow}
+}
+
+export function useQuickSelectBtnR(): UseQuickSelectBtn {
+    return {type: "USE_QUICK_SELECT_BTN"}
+}
+export function setQuickSelectedItemR<T>(item: T): SetQuickSelectedItem<T> {
+    return {
+        type: "SET_QUICK_SELECT_ITEM", payload: item
+    }
+}
+
+export function SetColumnNumberR(num: number) :SetColumnNumber {
+    return {
+        type: "SET_COLUMN_NUMBER",
+        payload: num
+    }
 }

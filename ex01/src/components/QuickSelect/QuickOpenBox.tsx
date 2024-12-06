@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import QuickButton from "./QuickButton";
 import styled from "styled-components";
 
@@ -56,15 +56,22 @@ const QueryBoxClose = styled.div`
 interface QuickOpenBoxProps<T extends string | number | boolean, K> {
     searchValue?: T; // 帶值或不帶值
     onSearchResult?: (result: K) => void;
-    OperateComponent: React.FC
+    close: boolean;
+    children: React.ReactNode;
+    onOpenQueryBox: (isOpen: boolean) => void;
 }
 
-function QuickOpenBox<T extends string | number | boolean, K>({searchValue, onSearchResult, OperateComponent}: QuickOpenBoxProps<T, K>) {
+function QuickOpenBox<T extends string | number | boolean, K>({searchValue, onSearchResult, close, onOpenQueryBox, children}: QuickOpenBoxProps<T, K>) {
     const [open, setOpen] = useState(false);
 
     function openQueryBox(isOpen: boolean) {
         setOpen(isOpen);
+        onOpenQueryBox(true);
     }
+    useEffect(() => {
+        if(close)
+            setOpen(false);
+    }, [close]);
     
     return (
         <>
@@ -72,7 +79,7 @@ function QuickOpenBox<T extends string | number | boolean, K>({searchValue, onSe
                 if(event.target === event.currentTarget)
                     setOpen(false)
             }}>
-                <OperateComponent />
+                {children}
                 <QueryBoxClose title="關閉快速查詢" onClick={() => {setOpen(false);}} />
             </QueryBox>
             

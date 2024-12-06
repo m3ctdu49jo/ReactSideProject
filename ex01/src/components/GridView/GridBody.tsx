@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import style from "../../styles/style.module.css"
 import styled from "styled-components";
 import { useGridViewContext } from "./GridViewProvider";
-import { setClickItemR } from "./actions/GridActions";
+import { setClickItemR, setQuickSelectedItemR } from "./actions/GridActions";
 
 
 const Column = styled.div<ColumnProps>`
@@ -18,6 +18,12 @@ const ColumnNone = styled.div<ColumnProps>`
     border-left-width: 1px !important;
 `;
 
+const SelectedBtn = styled.div`
+    display: inline;
+    padding: .3rem .5rem;
+    border-radius: 5px;
+`;
+
 interface ColumnProps {
     $colsNum: number;
     $active?: boolean;
@@ -29,19 +35,20 @@ export interface GridBodyProps<T> {
     colsName: string[];
     dataItems: T[] | null;
     colsVisible: boolean[];
+    showQuickSelectedBtn?: boolean;
 }
 
 
 function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T>) {
 
     const [rowActive, setRowActive] = useState<string>("");
-    const colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
     const {state, dispatch} = useGridViewContext<T>();
 
     const itemClickHandle = (row: T, activeId: string) => {
         setRowActive(activeId);
         dispatch(setClickItemR(row))
     }
+
 
     useEffect(() => {
         if(!state.clickItem)
@@ -54,19 +61,26 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                 
                 !dataItems || dataItems.length === 0
                 ?
-                <ColumnNone className={style.gridViewColumn} $colsNum={colsName ? colsLen : 1}>沒有資料</ColumnNone>
+                <ColumnNone className={style.gridViewColumn} $colsNum={colsName ? state.colsNum : 1}>沒有資料</ColumnNone>
                 :
                 dataItems.map((item, index) => {
                     let r: string = index.toString() + colsId?.map(c => item[c]);
-                    return colsId?.map((colId, colIndex) => {
+                    let cols =  colsId?.map((colId, colIndex) => {
                         if(!colsVisible[colIndex])
                             return;
                         let i = item[colId] as string;
                         let k: string = i + colId.toString() + r;
                         if(typeof i === "object")
                             i = "";
-                        return <Column className={style.gridViewColumn} key={k} $colsNum={colsLen} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
+                        return <Column className={style.gridViewColumn} key={k} $colsNum={state.colsNum} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>
                     })
+                    if(cols && state.showQuickSelectBtn){
+                        let seleColumn = <Column className={style.gridViewColumn + " " + style.d_flex + " " + style.flex_centerXY} key={r + "selectBtn"} $colsNum={state.colsNum} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>
+                                <SelectedBtn className={style.border_ddd} onClick={() => {dispatch(setQuickSelectedItemR(item))}}>{"選擇"}</SelectedBtn>
+                            </Column>;
+                        cols = [...cols, seleColumn];
+                    }
+                    return cols;
                 })
             }
         </>

@@ -52,9 +52,9 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}:
         let d = data && data[0] ? [...data] : [];
         let c = columnsName && columnsName[0] ? [...columnsName] : [];
         let names: string[], ids: Array<keyof T>, visibles: boolean[];
-        if (!c[0]) {
-            names = d.map(i => Object.keys(i))[0];
-            ids = d.map(i => Object.keys(i))[0] as Array<keyof T>;
+        if (!c[0] && d.length > 0) {
+            names = Object.keys(d[0]);
+            ids = Object.keys(d[0]) as Array<keyof T>;
             visibles = names?.map(i => true);
             c = ids?.map(id => {
                 let nc: K = {colId: id.toString(), colName: id.toString(), visible: true} as K;
@@ -90,7 +90,7 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}:
     return (
         <GridViewBox onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
             <ControlBar gridHover={gridHover} />
-            <GridViewWrap $colsNum={colsVisible ? colsVisible.filter(x => x !== false).length : 1}>
+            <GridViewWrap $colsNum={state.colsNum}>
                 <GridHeader columnNameItems={columnNameItems} colsName={colsName} colsVisible={colsVisible} />
                 <GridBody colsId={colsId} colsName={colsName} dataItems={data} colsVisible={colsVisible} />
             </GridViewWrap>

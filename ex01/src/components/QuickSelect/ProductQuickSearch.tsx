@@ -3,7 +3,7 @@ import { GridPaging } from "../GridView";
 import styled from "styled-components";
 import QuickOpenBox from "./QuickOpenBox";
 
-interface PropsProps {
+interface ProductProps {
     id: number,
     supplierId: number,
     categoryId: number,
@@ -28,8 +28,12 @@ const QueryBtn = styled.button`
 
 `;
 
-const ProductOperate: React.FC = () => {
-    const [data, setData] = useState<PropsProps[]>([]);
+interface ProductOperateProps {
+    getSelectValue: (item: ProductProps | undefined) => void
+}
+
+const ProductOperate: React.FC<ProductOperateProps> = ({getSelectValue}: ProductOperateProps) => {
+    const [data, setData] = useState<ProductProps[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [toSearch, setToSearch] = useState(false);
     const queryInputRef = useRef<HTMLInputElement>(null);
@@ -39,7 +43,7 @@ const ProductOperate: React.FC = () => {
         fetch("https://northwind.vercel.app/api/products", {
             method: "GET"
         })
-        .then<PropsProps[]>(d => d.json())
+        .then<ProductProps[]>(d => d.json())
         .then(d => {
             setData(d);
             setIsLoading(false);
@@ -53,13 +57,17 @@ const ProductOperate: React.FC = () => {
         fetch(`https://northwind.vercel.app/api/products/${id}`, {
             method: "GET"
         })
-        .then<PropsProps[]>(d => d.json())
+        .then<ProductProps[]>(d => d.json())
         .then(d => {
             setData(d);
             setIsLoading(false);
             setToSearch(false);
         });
     }, [toSearch]);
+
+    function getQuickSelectedItem(item: ProductProps | undefined){
+        getSelectValue(item);
+    }
 
     return (
         <>
@@ -73,17 +81,46 @@ const ProductOperate: React.FC = () => {
                 isLoading || (data && data.length === 0) ? 
                 "Loading..."
                 :                 
-                <GridPaging<PropsProps> dataItemList={data} />
+                <GridPaging<ProductProps> dataItemList={data} showQuickSelectBtn={true} onQulickSelectedItem={getQuickSelectedItem} />
                 }
         </>
     );
 }
 
+interface GetProductKeyValue{
+    unitPrice: string;
+    name: string;
+}
 
-function ProductQuickSearch() {
 
-    
-    return <QuickOpenBox OperateComponent={ProductOperate} />
+function ProductQuickSearch<T>({getKeyValue, getQuickValue}: {getKeyValue: keyof GetProductKeyValue | (keyof GetProductKeyValue)[]; getQuickValue: (value: string[]) => void}) {
+    const [selectedItem, setSelectedItem] = useState<ProductProps | undefined>(undefined);
+
+    useEffect(() => {
+        let val: string[] = [];
+        if(selectedItem){
+            if(Array.isArray(getKeyValue))
+                val = getKeyValue.map(i => selectedItem[i].toString());
+            else
+                val = [selectedItem[getKeyValue].toString()];
+        }
+        if(selectedItem)
+            getQuickValue(val);
+    }, [selectedItem]);
+
+    function onClearSelectedItem(isOpen: boolean){
+        if(isOpen)
+            setSelectedItem(undefined);
+    }
+
+    function getQuickSelectItem(item: ProductProps | undefined){
+        setSelectedItem(item);
+    }
+    return (
+        <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
+            <ProductOperate getSelectValue={getQuickSelectItem} />
+        </QuickOpenBox>
+    );
 }
 
 export default ProductQuickSearch;

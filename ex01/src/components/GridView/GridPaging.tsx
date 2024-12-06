@@ -3,7 +3,7 @@ import Grid, { columnsNameProps } from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider, { GridViewProviderProps, SortConditionProps } from "./GridViewProvider";
 import { gridReducer } from "./reducers/gridReducer";
-import { initialState, setAllowClickItemR, setClickItemR, setColsSortR, setDataItemR, setResetDataR } from "./actions/GridActions";
+import { initialState, setAllowClickItemR, setClickItemR, setColsSortR, SetColumnNumber, setDataItemR, setResetDataR, useQuickSelectBtnR } from "./actions/GridActions";
 
 
 function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
@@ -30,10 +30,12 @@ interface GridPagingProps<T> {
     columnNameList?: columnsNameProps[] | null;
     allowClickItem?: boolean;
     onClickItem?: (item: T | undefined) => void;
+    showQuickSelectBtn?: boolean;
+    onQulickSelectedItem?: (item: T | undefined) => void
 }
 
 
-function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickItem = false, onClickItem}: GridPagingProps<T>) {
+function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickItem = false, onClickItem, showQuickSelectBtn = false, onQulickSelectedItem}: GridPagingProps<T>) {
     const [pagingNum, setPagingNum] = useState<number>(1);
     const [pagingPerNum, setPagingPerNum] = useState<number>(10);
     const [pageData, setPageData] = useState<T[]>([]);
@@ -42,6 +44,16 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
     const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
     const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
     
+    useEffect(() => {
+        dispatch(setAllowClickItemR(allowClickItem));
+        if(showQuickSelectBtn)
+            dispatch(useQuickSelectBtnR());
+    }, []);
+
+    useEffect(() => {
+        if(onQulickSelectedItem)
+            onQulickSelectedItem(state.quickSelectedItem);
+    }, [state.quickSelectedItem]);
     
 
     useEffect(() => {     
@@ -50,7 +62,6 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
             setColumnsName(columnNameList);
         setPagingToFirst(true);
         setPagingNum(1);
-        dispatch(setAllowClickItemR(allowClickItem));
     }, [state.resetData]);
     
     useEffect(() => {   

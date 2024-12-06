@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import style from "../../styles/style.module.css";
 import styled from "styled-components";
 import { useGridViewContext, SortConditionProps } from "./GridViewProvider";
-import { setColsSortR } from "./actions/GridActions";
+import { setColsSortR, SetColumnNumberR } from "./actions/GridActions";
 
 const ColumnTitle = styled.div`
     background: #d7f3ff;
@@ -56,7 +56,14 @@ interface GridHeaderProps<K> {
 
 function GridHeader<T, K extends {colName: string; colId: string}>({columnNameItems, colsName, colsVisible}: GridHeaderProps<K>){
     const {dispatch, state} = useGridViewContext<T>();
-    const colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
+    const [headCols, setHeadCols] = useState<(JSX.Element | undefined)[]>([]);
+    
+    useEffect(() => {
+        let colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
+        colsLen = state.showQuickSelectBtn ? colsLen + 1 : colsLen;
+        console.log(state.showQuickSelectBtn);
+        dispatch(SetColumnNumberR(colsLen));
+    }, [colsVisible])
     
     let changeDataSort = async function (colId: keyof T) {
         let newSort = [...state.colsSort];
@@ -82,47 +89,41 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
         dispatch(setColsSortR(newSort));
     }
 
-    let s = colsName?.map((colName, index) => {
-        let id: keyof T, sort;
+    useEffect(() => {
+        let cols = colsName?.map((colName, index) => {
+            let id: keyof T, sort;
+    
+            if(!colsVisible[index])
+                return;
+    
+            if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
+                id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;
+            sort = state.colsSort.find(x => x.key === id);
+    
+            return (
+                <ColumnTitle key={colName + index} className={style.gridViewColumn}>
+                    {colName}
+                    <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
+                </ColumnTitle>
+            )
+        })
+        if(state.showQuickSelectBtn){
+            let seleColumn = <ColumnTitle key={"selectBtn"} className={style.gridViewColumn}>{"選擇"}</ColumnTitle>;
+            if(cols)
+                cols = [...cols, seleColumn];
+        }
 
-        if(!colsVisible[index])
-            return;
+        setHeadCols(cols);
+    }, [colsName, columnNameItems]);
 
-        if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
-            id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;
-        sort = state.colsSort.find(x => x.key === id);
-
-        return (
-            <ColumnTitle key={colName + index} className={style.gridViewColumn}>
-                {colName}
-                <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
-            </ColumnTitle>
-        )
-    });
 
     return (
         <>
             {
                 !colsName || colsName.length === 0 ?
-                <ColumnTitleNone  className={style.gridViewColumn} $colsNum={colsName ? colsLen : 1}>無欄位</ColumnTitleNone> 
+                <ColumnTitleNone  className={style.gridViewColumn} $colsNum={colsName ? state.colsNum : 1}>無欄位</ColumnTitleNone> 
                 :
-                colsName?.map((colName, index) => {
-                    let id: keyof T, sort;
-
-                    if(!colsVisible[index])
-                        return;
-
-                    if(typeof columnNameItems !== "undefined" && columnNameItems.length > 0)
-                        id =  columnNameItems.find(x => x.colName === colName)?.colId as keyof T;
-                    sort = state.colsSort.find(x => x.key === id);
-
-                    return (
-                        <ColumnTitle key={colName + index} className={style.gridViewColumn}>
-                            {colName}
-                            <i className={!sort ? "normal" : ""} onClick={() => { changeDataSort(id) }}>{sort ? sort.asc ? "⇃" : "↾" : "⥯"}</i>
-                        </ColumnTitle>
-                    )
-                })
+                headCols
             }
         </>
     );

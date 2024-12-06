@@ -31,6 +31,23 @@ button[type="button"] {
     display: block;
 }
 
+.border_ddd {
+    border: 1px solid #ddd;
+}
+
+.text_center {
+    text-align: center;
+}
+
+.d_flex {
+    display: flex;
+}
+
+.flex_centerXY {
+    align-items: center;
+    justify-content: center;
+}
+
 .flashBox {
     padding: 0;
 }

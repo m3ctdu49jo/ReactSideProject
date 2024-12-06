@@ -10,6 +10,9 @@ export interface gridState<T> {
     resetData: boolean;
     clickItem: T | undefined;
     allowClcikItem: boolean;
+    showQuickSelectBtn: boolean;
+    colsNum: number;
+    quickSelectedItem: T | undefined
 }
 
 
@@ -60,5 +63,20 @@ export function gridReducer<T>(state: gridState<T>, action: GridActions<T>){
                 ...state,
                 allowClcikItem: action.payload
             };
+        case "SET_COLUMN_NUMBER":
+            return {
+                ...state,
+                colsNum: action.payload
+            }
+        case "USE_QUICK_SELECT_BTN":
+            return {
+                ...state,
+                showQuickSelectBtn: true
+            }
+        case "SET_QUICK_SELECT_ITEM":
+            return {
+                ...state,
+                quickSelectedItem: action.payload
+            }
     }
 }
