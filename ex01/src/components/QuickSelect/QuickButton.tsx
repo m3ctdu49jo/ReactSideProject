@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import style from "../../styles/style.module.css"
 
 const QuickSearchButton = styled.div`
-    color: #666;
-    font-size: .8rem;
-    display: inline-block;
-    background: #fff;
-    padding: .5rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
+    font-family: cursive;
+    color: #fff;
+    background: #4cafeb !important;
+    margin: 0 .5rem;
 
     &:hover {
-        background: #eee;
+        background: #54bafa !important;
     }
 `;
 
@@ -22,5 +19,5 @@ interface QuickButtonProps {
 
 export default function QuickButton({ onClcikBtn }: QuickButtonProps) {
 
-    return <QuickSearchButton title="快速查詢" onClick={() => {onClcikBtn(true)}}>{"> >"}</QuickSearchButton>;
+    return <QuickSearchButton className={style.btn} title="快速查詢" onClick={() => {onClcikBtn(true)}}>{"> >"}</QuickSearchButton>;
 }

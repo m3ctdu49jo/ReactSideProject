@@ -22,6 +22,12 @@ const SelectedBtn = styled.div`
     display: inline;
     padding: .3rem .5rem;
     border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        
+    background: #eee;
+    }
 `;
 
 interface ColumnProps {
@@ -76,7 +82,7 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                     })
                     if(cols && state.showQuickSelectBtn){
                         let seleColumn = <Column className={style.gridViewColumn + " " + style.d_flex + " " + style.flex_centerXY} key={r + "selectBtn"} $colsNum={state.colsNum} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>
-                                <SelectedBtn className={style.border_ddd} onClick={() => {dispatch(setQuickSelectedItemR(item))}}>{"選擇"}</SelectedBtn>
+                                <SelectedBtn className={style.btn} onClick={() => {dispatch(setQuickSelectedItemR(item))}}>{"選擇"}</SelectedBtn>
                             </Column>;
                         cols = [...cols, seleColumn];
                     }

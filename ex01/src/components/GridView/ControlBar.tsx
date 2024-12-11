@@ -10,17 +10,18 @@ const ControlBox = styled.div.withConfig({
     line-height: 1;
     display: flex;
     background: #fff;
-    padding: .3rem .7rem;
+    padding: .5rem 1rem;
     position: absolute;
     transition: transform .5s ease, opacity .5s ease;
-    transform: translateY(${(props) => (props.gridhover ? "-33px" : "0")});
+    transform: translateY(${(props) => (props.gridhover ? "-46px" : "0")});
     opacity: ${(props) => (props.gridhover ? 1 : 0)};
     right: 0;
     border: 1px solid #ddd;
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0 3px 5px rgba(0, 0, 0, .1);
 
     div {
+        font-size: 1.3rem;
         position: relative;
         padding-right: 10px;
         cursor: pointer;
@@ -30,7 +31,7 @@ const ControlBox = styled.div.withConfig({
             content: "";
             background: #ddd;
             width: 1px;
-            height: 10px;
+            height: 80%;
             margin: auto 0;
             position: absolute;
             top: 0;

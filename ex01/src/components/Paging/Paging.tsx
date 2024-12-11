@@ -11,7 +11,6 @@ interface PagingArrowProps {
 }
 
 const PagingBox = styled.div<PagingBoxProps>`
-    font-size: .7rem;
     font-family: sans-serif;
     display: ${props => props.$noData ? "none" : "flex"};
     align-items: center;
@@ -19,7 +18,7 @@ const PagingBox = styled.div<PagingBoxProps>`
     margin-top: 10px;
 
     div {
-        padding: .3rem .5rem;
+        padding: 7px 11px;
         background: #eee;
         margin-right: .35rem;
         border-radius: 3px;
@@ -47,7 +46,6 @@ const PagingArrow = styled.div<PagingArrowProps>`
     cursor: ${props => props.$disabled ? "not-allowed !important" : "inherit"};
 `;
 const PagingInput = styled.input`
-    font-size: .7rem;
     text-align: center;
     width: 40px;
     padding: .2rem;

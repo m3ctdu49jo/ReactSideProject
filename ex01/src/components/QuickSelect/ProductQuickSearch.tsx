@@ -1,7 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { GridPaging } from "../GridView";
 import styled from "styled-components";
+import style from "../../styles/style.module.css"
 import QuickOpenBox from "./QuickOpenBox";
+
+const QuerySelect = styled.select`
+
+`;
+
+const QueryInput = styled.input`
+
+`;
+const QueryBtn = styled.button`
+
+`;
+
 
 interface ProductProps {
     id: number,
@@ -15,18 +28,6 @@ interface ProductProps {
     discontinued: boolean,
     name: string
 }
-
-
-const QuerySelect = styled.select`
-
-`;
-
-const QueryInput = styled.input`
-
-`;
-const QueryBtn = styled.button`
-
-`;
 
 interface ProductOperateProps {
     getSelectValue: (item: ProductProps | undefined) => void
@@ -75,7 +76,7 @@ const ProductOperate: React.FC<ProductOperateProps> = ({getSelectValue}: Product
                 <option>訂單單號</option>
                 <option>產品編號</option>
             </QuerySelect>
-            <QueryInput ref={queryInputRef} />
+            <QueryInput className={style.mr_1} ref={queryInputRef} />
             <QueryBtn onClick={() => {setToSearch(true); setIsLoading(true)}}>送出</QueryBtn>
             {
                 isLoading || (data && data.length === 0) ? 
@@ -92,8 +93,13 @@ interface GetProductKeyValue{
     name: string;
 }
 
+interface ProductQuickSearchProps {
+    getKeyValue: keyof GetProductKeyValue | (keyof GetProductKeyValue)[];
+    getQuickValue: (value: string[]) => void;
+}
 
-function ProductQuickSearch<T>({getKeyValue, getQuickValue}: {getKeyValue: keyof GetProductKeyValue | (keyof GetProductKeyValue)[]; getQuickValue: (value: string[]) => void}) {
+
+function ProductQuickSearch({getKeyValue, getQuickValue}: ProductQuickSearchProps) {
     const [selectedItem, setSelectedItem] = useState<ProductProps | undefined>(undefined);
 
     useEffect(() => {

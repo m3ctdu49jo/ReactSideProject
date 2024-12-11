@@ -8,10 +8,11 @@ interface QueryBoxProps {
 }
 
 const QueryBox = styled.div<QueryBoxProps>`
-    background: rgba(255, 255, 255, .5);
+    background: rgba(255, 255, 255, .8);
     display: ${props => props.$show ? "block" : "none"};
     width: 100%;
     height: 100%;
+    padding: .8rem 1rem;
     position: fixed;
     top:0;
     left: 0;
@@ -76,8 +77,8 @@ function QuickOpenBox<T extends string | number | boolean, K>({searchValue, onSe
     return (
         <>
             <QueryBox $show={open} onClick={(event: React.MouseEvent) => {
-                if(event.target === event.currentTarget)
-                    setOpen(false)
+                // if(event.target === event.currentTarget)
+                //     setOpen(false)
             }}>
                 {children}
                 <QueryBoxClose title="關閉快速查詢" onClick={() => {setOpen(false);}} />

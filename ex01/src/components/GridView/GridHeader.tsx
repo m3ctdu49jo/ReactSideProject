@@ -61,7 +61,6 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
     useEffect(() => {
         let colsLen = colsVisible ? colsVisible.filter(x => x !== false).length : 1
         colsLen = state.showQuickSelectBtn ? colsLen + 1 : colsLen;
-        console.log(state.showQuickSelectBtn);
         dispatch(SetColumnNumberR(colsLen));
     }, [colsVisible])
     
@@ -108,7 +107,7 @@ function GridHeader<T, K extends {colName: string; colId: string}>({columnNameIt
             )
         })
         if(state.showQuickSelectBtn){
-            let seleColumn = <ColumnTitle key={"selectBtn"} className={style.gridViewColumn}>{"選擇"}</ColumnTitle>;
+            let seleColumn = <ColumnTitle key={"selectBtn"} className={style.gridViewColumn + " " + style.text_center}>{"選擇"}</ColumnTitle>;
             if(cols)
                 cols = [...cols, seleColumn];
         }
