@@ -5,8 +5,11 @@ import { useGridViewContext, SortConditionProps } from "./GridViewProvider";
 import { setColsSortR, SetColumnNumberR } from "./actions/GridActions";
 
 const ColumnTitle = styled.div`
-    background: #d7f3ff;
-    padding-right: 1rem;
+    white-space: nowrap;
+    background: #abd534;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-right: 1.3rem;
     border-top-width: 1px !important; 
     position: relative;
 
@@ -16,8 +19,8 @@ const ColumnTitle = styled.div`
     }
     
     i {
-        color: #333;
-        font-size: 16px;
+        color: #666;
+        font-size: 1.2rem;
         text-align: center;
         line-height: 20px;
         font-style: normal;
@@ -32,7 +35,7 @@ const ColumnTitle = styled.div`
         border-radius: 50%;
 
         &.normal {
-            color: #aaa;
+            color: #fff;
         }
 
     }

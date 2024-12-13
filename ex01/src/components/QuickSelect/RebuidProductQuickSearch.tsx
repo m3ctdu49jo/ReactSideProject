@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import QuickSearch from "./QuickSearch";
+import { columnsNameProps } from "../GridView/Grid";
 
 
 interface ProductProps {
@@ -43,8 +44,17 @@ interface ProductQuickSearchProps {
 
 
 function RebuildProductQuickSearch({queryKeys, getKeyValue, getQuickValue}: ProductQuickSearchProps) {
-
+    const url = "https://northwind.vercel.app/api/products";
     let queryKeysName: string | string[];
+    let colNameList: columnsNameProps[];
+
+    colNameList = [
+        {colId: "id", colName: productLables.id},
+        {colId: "name", colName: productLables.name},
+        {colId: "categoryId", colName: productLables.categoryId},
+        {colId: "unitPrice", colName: productLables.unitPrice}
+    ];
+
     if(Array.isArray(queryKeys)){
         queryKeysName = [];
         queryKeys.map(key => {
@@ -59,7 +69,7 @@ function RebuildProductQuickSearch({queryKeys, getKeyValue, getQuickValue}: Prod
         // <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
         //     <ProductOperate getSelectValue={getQuickSelectItem} />
         // </QuickOpenBox>
-        <QuickSearch<ProductProps> getKeyValue={getKeyValue} queryKeys={queryKeys} queryKeysName={queryKeysName} getQuickValue={getQuickValue} />
+        <QuickSearch<ProductProps> gridColumnsName={colNameList} queryURL={url} getKeyValue={getKeyValue} queryKeys={queryKeys} queryKeysName={queryKeysName} getQuickValue={getQuickValue} />
     );
 }
 

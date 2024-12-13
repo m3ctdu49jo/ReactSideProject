@@ -136,9 +136,8 @@ button, div.btn {
 
 /*------ GridView ------*/
 .gridViewColumn {
-    font-size: .9rem;
     border: 1px solid #ddd;
-    padding: .3rem .5rem;
+    padding: .4rem .5rem;
 }
 .gridViewColumn:nth-child(n) {
     border-top-width: 0;

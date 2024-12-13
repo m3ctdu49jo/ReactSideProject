@@ -8,8 +8,7 @@ import { useGridViewContext, GridViewProviderProps, SortConditionProps } from ".
 import { setAllowClickItemR, setClickItemR, setColsSortR, setDataItemR, setResetDataR } from "./actions/GridActions";
 
 const GridViewBox = styled.div`
-    width: 80%;
-    margin: 50px auto 0;
+    margin-top: 15px;
     position: relative;
 `;
 const GridViewWrap = styled.div<GridViewWrapProps>`
@@ -88,7 +87,7 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}:
     };
 
     return (
-        <GridViewBox onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
+        <GridViewBox style={{width: "100%", maxWidth: "1000px", overflowX: "auto"}} onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
             <ControlBar gridHover={gridHover} />
             <GridViewWrap $colsNum={state.colsNum}>
                 <GridHeader columnNameItems={columnNameItems} colsName={colsName} colsVisible={colsVisible} />

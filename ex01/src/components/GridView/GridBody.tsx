@@ -19,6 +19,7 @@ const ColumnNone = styled.div<ColumnProps>`
 `;
 
 const SelectedBtn = styled.div`
+    white-space: nowrap;
     display: inline;
     padding: .3rem .5rem;
     border-radius: 5px;
@@ -75,7 +76,7 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
                         if(!colsVisible[colIndex])
                             return;
                         let i = item[colId] as string;
-                        let k: string = i + colId.toString() + r;
+                        let k: string = i + colId.toString() + r + colIndex;
                         if(typeof i === "object")
                             i = "";
                         return <Column className={style.gridViewColumn} key={k} $colsNum={state.colsNum} $active={rowActive === r && state.allowClcikItem} onClick={() => {itemClickHandle(item, r)}}>{i}</Column>

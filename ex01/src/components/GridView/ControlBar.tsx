@@ -12,13 +12,19 @@ const ControlBox = styled.div.withConfig({
     background: #fff;
     padding: .5rem 1rem;
     position: absolute;
-    transition: transform .5s ease, opacity .5s ease;
-    transform: translateY(${(props) => (props.gridhover ? "-46px" : "0")});
-    opacity: ${(props) => (props.gridhover ? 1 : 0)};
-    right: 0;
+    transition: transform .5s ease .5s, opacity .5s ease;
+    transform: translateY(${(props) => (props.gridhover ? "20px" : "-50px")});
+    opacity: ${(props) => (props.gridhover ? .5 : 0)};
+    right: 20px;
+    top: 0px;
     border: 1px solid #ddd;
     border-radius: 5px;
     box-shadow: 0 3px 5px rgba(0, 0, 0, .1);
+    z-index: 1;
+
+    &:hover {
+        opacity: 1;
+    }
 
     div {
         font-size: 1.3rem;
