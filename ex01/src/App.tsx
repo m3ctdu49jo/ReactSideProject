@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { StrictMode, useEffect, useState } from "react";
 import { Provider } from "react-redux"
 import store from "./store/store";
 import GridDetailTest from "./pages/GridDetailTest";
@@ -9,10 +9,12 @@ import QuickSearchTest from "./pages/QuickSearchTest";
 export default function App(){
     return (
         <>
-            <Provider store={store}>
-                {/* <GridDetailTest /> */}
-                <QuickSearchTest />
-            </Provider>
+            <StrictMode>
+                <Provider store={store}>
+                    {/* <GridDetailTest /> */}
+                    <QuickSearchTest />
+                </Provider>
+            </StrictMode>
         </>
     );
 }

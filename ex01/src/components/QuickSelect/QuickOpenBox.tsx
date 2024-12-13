@@ -71,15 +71,13 @@ const QueryBoxClose = styled.div`
 
 `;
 
-interface QuickOpenBoxProps<T extends string | number | boolean, K> {
-    searchValue?: T; // 帶值或不帶值
-    onSearchResult?: (result: K) => void;
+interface QuickOpenBoxProps {
     close: boolean;
     children: React.ReactNode;
     onOpenQueryBox: (isOpen: boolean) => void;
 }
 
-function QuickOpenBox<T extends string | number | boolean, K>({searchValue, onSearchResult, close, onOpenQueryBox, children}: QuickOpenBoxProps<T, K>) {
+function QuickOpenBox({close, onOpenQueryBox, children}: QuickOpenBoxProps) {
     const [open, setOpen] = useState(false);
 
     function openQueryBox(isOpen: boolean) {
@@ -93,13 +91,13 @@ function QuickOpenBox<T extends string | number | boolean, K>({searchValue, onSe
     
     return (
         <>
-            <QueryBoxCover $show={open}>
-                <QueryBox onClick={(event: React.MouseEvent) => {
-                    // if(event.target === event.currentTarget)
-                    //     setOpen(false)
-                }}>
+            <QueryBoxCover $show={open} onClick={(event: React.MouseEvent) => {
+                if(event.target === event.currentTarget)
+                    setOpen(false);
+            }}>
+                <QueryBox>
                     {children}
-                    <QueryBoxClose title="關閉快速查詢" onClick={() => {setOpen(false);}} />
+                    <QueryBoxClose title="關閉快速查詢" onClick={() => {setOpen(false)}} />
                 </QueryBox>
 
             </QueryBoxCover>

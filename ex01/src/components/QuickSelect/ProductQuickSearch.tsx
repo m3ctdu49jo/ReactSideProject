@@ -1,18 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { GridPaging } from "../GridView";
 import styled from "styled-components";
 import style from "../../styles/style.module.css"
 import QuickOpenBox from "./QuickOpenBox";
+import { initialState, quickSearchReducer } from "./reducers/quickSearchReducer";
+import QuickSearchProvider from "./QucikSearchProvider";
 
 const QuerySelect = styled.select`
-
 `;
 
 const QueryInput = styled.input`
-
 `;
 const QueryBtn = styled.button`
-
 `;
 
 
@@ -99,8 +98,9 @@ interface ProductQuickSearchProps {
 }
 
 
-function ProductQuickSearch({getKeyValue, getQuickValue}: ProductQuickSearchProps) {
+function ProductQuickSearch<T>({getKeyValue, getQuickValue}: ProductQuickSearchProps) {
     const [selectedItem, setSelectedItem] = useState<ProductProps | undefined>(undefined);
+    const [state, dispatch] = useReducer(quickSearchReducer<T>, initialState<T>());
 
     useEffect(() => {
         let val: string[] = [];
@@ -123,9 +123,11 @@ function ProductQuickSearch({getKeyValue, getQuickValue}: ProductQuickSearchProp
         setSelectedItem(item);
     }
     return (
-        <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
-            <ProductOperate getSelectValue={getQuickSelectItem} />
-        </QuickOpenBox>
+        <QuickSearchProvider<T> state={state} disptach={dispatch}>
+            <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
+                <ProductOperate getSelectValue={getQuickSelectItem} />
+            </QuickOpenBox>
+        </QuickSearchProvider>
     );
 }
 

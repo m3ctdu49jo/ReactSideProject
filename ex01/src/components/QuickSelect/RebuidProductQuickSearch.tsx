@@ -1,4 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
 import QuickSearch from "./QuickSearch";
 import { columnsNameProps } from "../GridView/Grid";
 
@@ -28,13 +27,6 @@ const productLables: Record<keyof ProductProps, string> = {
     discontinued: "已停止供應",
     name: "名稱",
 }
-
-interface GetProductKeyValue {
-    unitPrice: number;
-    name: string;
-    a: string
-}
-
 
 interface ProductQuickSearchProps {
     getKeyValue: keyof ProductProps | (keyof ProductProps)[];
@@ -69,7 +61,7 @@ function RebuildProductQuickSearch({queryKeys, getKeyValue, getQuickValue}: Prod
         // <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
         //     <ProductOperate getSelectValue={getQuickSelectItem} />
         // </QuickOpenBox>
-        <QuickSearch<ProductProps> gridColumnsName={colNameList} queryURL={url} getKeyValue={getKeyValue} queryKeys={queryKeys} queryKeysName={queryKeysName} getQuickValue={getQuickValue} />
+        <QuickSearch<ProductProps> gridColumnsName={colNameList} queryURL={url} resultKeys={getKeyValue} queryKeys={queryKeys} queryKeysName={queryKeysName} getQuickValue={getQuickValue} />
     );
 }
 
