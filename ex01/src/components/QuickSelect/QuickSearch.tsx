@@ -7,6 +7,8 @@ import { columnsNameProps } from "../GridView/Grid";
 import QuickSearchProvider, { useQuickSearchContext } from "./QucikSearchProvider";
 import { quickSearchReducer, initialState } from "./reducers/quickSearchReducer";
 import { setQueryGridColumnsName, setQueryKeys, setQueryKeysName, setQueryURL, setResultKeys } from "./actions/quickSearchActions";
+import OpenBox from "../Common/OpenBox";
+import QuickButton from "./QuickButton";
 
 const QuerySelect = styled.select`
 `;
@@ -112,6 +114,7 @@ interface QuickSearchProps<T> {
 function QuickSearch<T extends Object>({queryURL, resultKeys, getQuickValue, queryKeys, queryKeysName, gridColumnsName}: QuickSearchProps<T>) {
     const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
     const [state, dispatch] = useReducer(quickSearchReducer<T>, initialState<T>());
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if(!queryURL)
@@ -137,18 +140,27 @@ function QuickSearch<T extends Object>({queryURL, resultKeys, getQuickValue, que
     }, [selectedItem]);
 
     function onClearSelectedItem(isOpen: boolean){
+        setOpen(isOpen);
         if(isOpen)
             setSelectedItem(undefined);
     }
 
     function getQuickSelectedItem(item: T | undefined){
-        setSelectedItem(item);
+        if(item){
+            setSelectedItem(item);
+            setOpen(false);
+        }
     }
     return (
         <QuickSearchProvider<T> state={state} disptach={dispatch}>
-            <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
+            {/* <QuickOpenBox close={selectedItem !== undefined} onOpenQueryBox={onClearSelectedItem}>
                 <OperatePanel getSelectedItem={getQuickSelectedItem} />
-            </QuickOpenBox>
+            </QuickOpenBox> */}
+            
+            <OpenBox open={open} onIsOpen={onClearSelectedItem}>
+                <OperatePanel getSelectedItem={getQuickSelectedItem} />
+            </OpenBox>
+            <QuickButton onClcikBtn={setOpen} />
         </QuickSearchProvider>
     );
 }
