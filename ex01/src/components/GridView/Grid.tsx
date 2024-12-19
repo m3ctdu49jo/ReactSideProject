@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { CSSProperties } from "styled-components";
 import useDebounce from "../../hooks/useDebounce";
 import ControlBar from "./ControlBar";
 import GridHeader from "./GridHeader";
@@ -23,6 +23,7 @@ interface GridViewWrapProps {
 interface GridProps<T, K> {
     data: T[] | null;
     columnsName: K[] | null;
+    style?: CSSProperties;
     // onSortChange: (sort: SortConditionProps<T>[]) => void;
     // onRestSetData: (reset: boolean) => void;
     // onClickItem?: (row: T | undefined) => void;
@@ -37,7 +38,7 @@ export interface columnsNameProps {
 
 
 // 接收透過元件傳遞進來的參數要使用解構物件方式獲取，否則數據將有可能出錯
-function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}: GridProps<T, K>) {
+function Grid<T extends Object, K extends columnsNameProps>({data, columnsName, style}: GridProps<T, K>) {
     const { state, dispatch}: GridViewProviderProps<T> = useGridViewContext();
     const [columnNameItems, setColumnNameItem] = useState<K[]>([]);
     const [colsName, setColsName] = useState<string[]>([]);
@@ -87,7 +88,7 @@ function Grid<T extends Object, K extends columnsNameProps>({data, columnsName}:
     };
 
     return (
-        <GridViewBox style={{width: "100%", maxWidth: "1000px", overflowX: "auto"}} onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
+        <GridViewBox style={{width: "100%", maxWidth: "1000px", overflowX: "auto", ...style}} onMouseEnter={() => {setTimeoutHover(true)}} onMouseLeave={() => {setTimeoutHover(false)}}>
             <ControlBar gridHover={gridHover} />
             <GridViewWrap $colsNum={state.colsNum}>
                 <GridHeader columnNameItems={columnNameItems} colsName={colsName} colsVisible={colsVisible} />

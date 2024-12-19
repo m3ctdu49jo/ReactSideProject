@@ -3,7 +3,7 @@ import Grid, { columnsNameProps } from "./Grid";
 import Paging from "../Paging";
 import GridViewProvider, { GridViewProviderProps, SortConditionProps } from "./GridViewProvider";
 import { gridReducer } from "./reducers/gridReducer";
-import { initialState, setAllowClickItemR, setClickItemR, setColsSortR, SetColumnNumber, setDataItemR, setResetDataR, useQuickSelectBtnR } from "./actions/GridActions";
+import { clearColsSortR, initialState, setAllowClickItemR, setClickItemR, setColsSortR, SetColumnNumber, setDataItemR, setResetDataR, useQuickSelectBtnR } from "./actions/GridActions";
 
 
 function mutiSort<T>(data: T[], sortConditions: SortConditionProps<T>[]): T[] {
@@ -43,6 +43,7 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [pagingToFirst, setPagingToFirst] = useState<boolean>(false);
     const [state, dispatch] = useReducer(gridReducer<T>, initialState<T>());
+    const [dataCount, setDataCount] = useState<number>(0);
     
     useEffect(() => {
         dispatch(setAllowClickItemR(allowClickItem));
@@ -57,7 +58,8 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
     
 
     useEffect(() => {     
-        dispatch(setDataItemR(dataItemList));
+        if(dataItemList)
+            dispatch(setDataItemR([...dataItemList]));
         if(columnNameList)
             setColumnsName(columnNameList);
         setPagingToFirst(true);
@@ -65,7 +67,7 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
     }, [state.resetData]);
     
     useEffect(() => {   
-        if(!state.dataItems || state.dataItems.length === 0)
+        if(!state.dataItems || state.dataItems.length === 0 )
             return;
 
         const firstIndex = ((pagingNum - 1) * pagingPerNum);
@@ -77,6 +79,17 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
         setPageData(filterD);
         setPagingToFirst(false);
     }, [pagingNum, pagingPerNum, state.dataItems]);
+
+    useEffect(() => {
+        if(dataItemList){
+            setDataCount(dataItemList.length);
+            dispatch(setDataItemR([...dataItemList]));
+        }
+        setPagingToFirst(true);
+        setPagingNum(1);
+        dispatch(clearColsSortR());
+        dispatch(setResetDataR(true));
+    }, [dataItemList]);
     
     useEffect(() => {   
         if(!state.dataItems || state.dataItems.length === 0 || state.resetData)
@@ -87,7 +100,7 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
         }
         let itemSorted: T[] = mutiSort<T>([...state.dataItems], state.colsSort);
         dispatch(setDataItemR(itemSorted));
-    }, [state.colsSort]);
+    }, [state.colsSort, state.resetData]);
 
     useEffect(() => {
         if(onClickItem && allowClickItem)
@@ -104,8 +117,9 @@ function GridPaging<T extends Object>({dataItemList, columnNameList, allowClickI
             state={state}
             dispatch={dispatch}
         >
-            <Grid data={pageData} columnsName={columnsName} />
-            <Paging dataNum={dataItemList ? dataItemList.length : 0} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />
+            
+            <Grid data={pageData} columnsName={columnsName} style={{margin:"0 auto"}} />
+            <Paging dataNum={dataCount} onPagingChange={pagingChangeHandle} currentNumToFirst={pagingToFirst} />
         </GridViewProvider>
     );
 }

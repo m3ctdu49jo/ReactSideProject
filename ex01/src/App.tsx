@@ -11,8 +11,8 @@ export default function App(){
         <>
             <StrictMode>
                 <Provider store={store}>
-                    {/* <GridDetailTest /> */}
-                    <QuickSearchTest />
+                    <GridDetailTest />
+                    {/* <QuickSearchTest /> */}
                 </Provider>
             </StrictMode>
         </>

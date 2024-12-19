@@ -50,11 +50,18 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
 
     const [rowActive, setRowActive] = useState<string>("");
     const {state, dispatch} = useGridViewContext<T>();
+    const [items, setItems] = useState<T[] | null>();
 
     const itemClickHandle = (row: T, activeId: string) => {
         setRowActive(activeId);
         dispatch(setClickItemR(row))
     }
+
+    useEffect(() => {
+        //console.log(dataItems);
+        if(dataItems)
+            setItems([...dataItems]);
+    }, [dataItems]);
 
 
     useEffect(() => {
@@ -66,11 +73,11 @@ function GridBody<T>({colsName, colsId, dataItems, colsVisible}: GridBodyProps<T
         <>
             {
                 
-                !dataItems || dataItems.length === 0
+                !items || items.length === 0
                 ?
                 <ColumnNone className={style.gridViewColumn} $colsNum={colsName ? state.colsNum : 1}>沒有資料</ColumnNone>
                 :
-                dataItems.map((item, index) => {
+                items.map((item, index) => {
                     let r: string = index.toString() + colsId?.map(c => item[c]);
                     let cols =  colsId?.map((colId, colIndex) => {
                         if(!colsVisible[colIndex])

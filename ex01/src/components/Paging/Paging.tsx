@@ -15,7 +15,8 @@ const PagingBox = styled.div<PagingBoxProps>`
     display: ${props => props.$noData ? "none" : "flex"};
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 15px;
+    margin-bottom: 25px;
 
     div {
         padding: 7px 11px;
@@ -151,7 +152,6 @@ function Paging({dataNum, onPagingChange, currentNumToFirst}: PagingProps){
         }   // 1 ... 4 5 6 7 8 ... 11
 
         setPagingItems(pagings);
-
     }, [dataNum, currentNum, pagingPer]);
 
     function pagingPrevNext(clickType: string){

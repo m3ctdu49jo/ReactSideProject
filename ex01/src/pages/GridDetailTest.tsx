@@ -130,10 +130,12 @@ export default function GridDetailTest(){
             {/* <NewsLoopBox /> */}
             {/* <GridView /> */}
             {isLoading ? "loading..." :
-            <GridPaging<dataItemsProps> dataItemList={data} columnNameList={colNameList} allowClickItem={true} onClickItem={setClickItem} />}
+            <GridPaging<dataItemsProps> dataItemList={data} columnNameList={colNameList} allowClickItem={true} onClickItem={(item) => {setClickItem(item)}} />}
             {
-                showDetail && isDetailLoading ? 
-                <GridPaging<DetailDataItemsProps> dataItemList={deatilData} columnNameList={detailColNameList} />
+                showDetail ? 
+                    isDetailLoading && deatilData ? 
+                    <GridPaging<DetailDataItemsProps> dataItemList={deatilData} columnNameList={detailColNameList} />
+                    : <GridPaging<DetailDataItemsProps> dataItemList={null} columnNameList={detailColNameList} />
                 : ""
             }
         </>
