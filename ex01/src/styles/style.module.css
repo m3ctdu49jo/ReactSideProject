@@ -1,7 +1,10 @@
 * {
-    font-size: .95rem;
+    font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
+}
+a {
+    text-decoration: none;
 }
 
 ul {
