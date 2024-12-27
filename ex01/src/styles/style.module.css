@@ -1,10 +1,16 @@
 * {
+    line-height: 1.5;
     font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 a {
+    color: #47929c;
     text-decoration: none;
+
+    &:hover {
+        color: #32727a;;
+    }
 }
 
 ul {
@@ -31,6 +37,10 @@ input {
 }
 select {
     padding: 0.3rem;
+}
+
+p {
+    margin: 0;
 }
 
 button, div.btn {
@@ -73,6 +83,22 @@ button, div.btn {
 .d_flex {
     display: flex;
 }
+
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 50px 30px;
+}
+
+.arti_line_height {
+    line-height: 3;
+}
+
+@media screen and (max-width: 800px) and (min-width: 660px) {
+
+}
+
 
 .flex_centerXY {
     align-items: center;

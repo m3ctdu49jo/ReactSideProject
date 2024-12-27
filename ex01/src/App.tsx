@@ -5,6 +5,7 @@ import GridDetailTest from "./pages/GridDetailTest";
 import QuickSearchTest from "./pages/QuickSearchTest";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import Layout from "./components/Common/Layout";
+import Home from "./pages/Home";
 
 
 //components 以大寫開頭
@@ -23,6 +24,13 @@ export default function App(){
                     </Routes>
                     {/* <GridDetailTest /> */}
                     {/* <QuickSearchTest /> */}
+                </BrowserRouter>
+                <BrowserRouter basename="/">
+                    <Routes>
+                        <Route element={<Layout />}>
+                            <Route path="/" element={<Home />} />   
+                        </Route>
+                    </Routes>
                 </BrowserRouter>
                 </Provider>
             </StrictMode>
