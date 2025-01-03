@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import style from "../../styles/style.module.css"
 import { styled } from "styled-components";
+import Logo from "./Logo";
 
 const HeaderBox = styled.header`
     display: flex;
@@ -17,16 +18,6 @@ const HeaderWrap = styled.div`
     padding-top: 20px !important;
     padding-bottom: 20px !important;
 `;
-const Logo = styled.div`
-    color: #ffae00;
-    font-size: 1.8rem;  
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-
-    a, &:hover {
-        color: #ffae00;
-    }
-`;
-
 
 const Menu = styled.ul`
     font-size: 1rem;
@@ -53,15 +44,13 @@ const Header = () => {
         <>
             <HeaderBox>
                 <HeaderWrap className={style.container}>
-                    <Logo>
-                        <Link to="/">
-                            SAMPLE<i style={{color: "#ccc"}}>WEB</i>
-                        </Link>                        
-                    </Logo>
+                    <Logo />
                     <div style={{paddingLeft: "20px"}}>
                         <Menu>
-                            <li><Link to="/GridDetailTest">GridDetailTest</Link></li>
-                            <li><Link to="/QuickSearchTest">QuickSearchTest</Link></li>
+                            <li><Link to="">關於我們</Link></li>
+                            <li><Link to="">最新消息</Link></li>
+                            <li><Link to="">畫　廊</Link></li>
+                            <li><Link to="">聯絡我們</Link></li>
                         </Menu>
                     </div>
                 </HeaderWrap>
