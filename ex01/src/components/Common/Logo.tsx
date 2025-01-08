@@ -15,7 +15,7 @@ function Logo() {
     return (
         <LogoWrap>
             <Link to="/">
-                PATING ART. <i style={{color: "#ccc"}}>WEB</i>
+                Painting Art.<i style={{color: "#ccc"}}>WEB</i>
             </Link>                        
         </LogoWrap>
     );

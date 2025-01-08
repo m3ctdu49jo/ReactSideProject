@@ -4,44 +4,13 @@ import { Link } from "react-router-dom";
 import LinkBtn from "../components/Common/LinkBtn";
 import Footer from "../components/Common/Footer";
 import Album from "../components/Common/Album";
+import img from "../images/news/img01.jpg";
+import Title from "../components/Common/Title";
+
+
 const Banner = styled.div`
     background: #b7d2dd;
     height: 500px;
-`;
-const SectionTitle = styled.div`
-    color: #c3d09b;
-    font-size: 2.5rem;
-    display: flex;
-    justify-content: center;
-    padding: 20px 50px;
-    div {
-        font-family: Verdana, Geneva, Tahoma, sans-serif;
-        text-align: center;
-        p {
-            color: #ceaa54;
-            font-size: 1.5rem;
-            position: relative;
-
-            &:after, &:before {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                margin-top: auto;
-                margin-bottom: auto;
-            }
-            &:after {
-                color: #c480c4;
-                content: "╚╗";
-                left: -50px;
-            }
-
-            &:before {
-                color: #bd8181;
-                content: "╔╝";
-                right: -50px;
-            }
-        }
-    }
 `;
 
 const NewsSection = styled.section`
@@ -147,16 +116,10 @@ const AlbumSection = styled.section`
 const TextSection = styled.section`
 `;
 
-function Title({title, enTitle}:{title: string, enTitle: string}) {
-    return (
-        <SectionTitle><div>{title}<p>{enTitle}</p></div></SectionTitle>
-    );
-}
-
 const Home = () => {
     return (
         <>
-            <Banner></Banner>
+            <Banner style={{background: `url(${require("../images/home/banner.jpg")}) center center`}}></Banner>
             <NewsSection>
                 <div className={style.container}>
                     <Title title="Messages." enTitle="新 訊 息" />
@@ -165,7 +128,7 @@ const Home = () => {
                             <Link to="">
                                 <i>December 24</i>
                                 <strong>聖誕平安夜到來，推出全新畫作</strong>
-                                <div className="img_box"></div>
+                                <div className="img_box" style={{background: `url(${img}) center center`}}></div>
                                 <p>12月20日推出聖誕畫作，根據不同的場景呈現出不同的聖誕歡樂意境。</p>
                             </Link>
                         </li>
@@ -173,7 +136,7 @@ const Home = () => {
                             <Link to="">
                                 <i>December 24</i>
                                 <strong>聖誕平安夜到來，推出全新畫作</strong>
-                                <div className="img_box"></div>
+                                <div className="img_box" style={{background: `url(${require("../images/news/img02.jpg")}) center center`}}></div>
                                 <p>12月20日推出聖誕畫作，根據不同的場景呈現出不同的聖誕歡樂意境。</p>
                             </Link>
                         </li>
@@ -181,18 +144,18 @@ const Home = () => {
                             <Link to="">
                                 <i>December 24</i>
                                 <strong>聖誕平安夜到來，推出全新畫作</strong>
-                                <div className="img_box"></div>
+                                <div className="img_box" style={{background: `url(${require("../images/news/img03.jpg")}) center center`}}></div>
                                 <p>12月20日推出聖誕畫作，根據不同的場景呈現出不同的聖誕歡樂意境。</p>
                             </Link>
                         </li>
                     </ul>
-                    <LinkBtn text="更多消息." to="/news" />
+                    <LinkBtn text="更多消息" to="/news" />
                 </div>
             </NewsSection>
             
             <AboutSection>
                 <div className="about_img">
-                    <div></div>
+                    <div style={{background: `url(${require("../images/home/about.jpg")}) center center`, backgroundSize: "cover"}}></div>
                 </div>
                 <div className="about_txt">
                 <Title title="Painting." enTitle="關　於" />
@@ -214,7 +177,6 @@ const Home = () => {
                     <p className={style.arti_line_height}>此外，畫廊在藝術市場中扮演著重要角色。它們為藝術家提供展示與銷售作品的機會，同時為收藏家和投資者提供專業的建議與服務。</p>  
                 </div>
             </TextSection>
-            <Footer />
         </>
     );
 }

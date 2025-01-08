@@ -44,13 +44,14 @@ function Footer(){
     return (
         <FooterWrap>
             <Copyright>
-                Copyright © SAMPLEWEB All Rights Reserved.
+                Copyright © Painting Art.WEB All Rights Reserved.
             </Copyright>
             <FooterContainer className={style.container}>
                 <LogoBox>
                     <Logo />
                     <p>TEL 04-768888866</p>
                     <p>FAX 04-768888868</p>
+                    <p>E-mail paintingart.web@paintingart.web.com</p>
                 </LogoBox>                
                 <MenuBox>
                     <ul>

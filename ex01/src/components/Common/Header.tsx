@@ -47,9 +47,9 @@ const Header = () => {
                     <Logo />
                     <div style={{paddingLeft: "20px"}}>
                         <Menu>
-                            <li><Link to="">關於我們</Link></li>
+                            <li><Link to="/About">關於我們</Link></li>
                             <li><Link to="">最新消息</Link></li>
-                            <li><Link to="">畫　廊</Link></li>
+                            <li><Link to="/Album">畫　廊</Link></li>
                             <li><Link to="">聯絡我們</Link></li>
                         </Menu>
                     </div>
