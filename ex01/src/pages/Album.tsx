@@ -36,7 +36,7 @@ function Album(){
             else{
                 setAddImgLoading(false);
             }
-            console.log(window.scrollY);
+            // console.log(window.scrollY);
         }
 
         window.addEventListener("scroll", scrollMove);

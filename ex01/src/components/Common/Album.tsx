@@ -27,7 +27,7 @@ interface LiBoxProp {
 
 function Album(){
     const [currentImgIndex, setCurrentImgIndex] = useState(0);
-    const imgs = ["#eee", "#ddffff", "#f7edb9"];
+    const imgs = ["img01", "img02", "img03"];
 
     
 
@@ -49,7 +49,7 @@ function Album(){
                     imgs.map((img, index) => {
                         return (                            
                             <LiBox key={img + index} $showImg={currentImgIndex === index}>
-                                <div style={{background: img}}>
+                                <div style={{background: `url(${require(`../../images/album/${img}.jpg`)}) center center`, backgroundSize: "cover"}}>
                                     <img src="" />
                                 </div>
                             </LiBox>
